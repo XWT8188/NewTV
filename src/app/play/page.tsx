@@ -2377,6 +2377,7 @@ function PlayPageClient() {
             
             .artplayer-plugin-danmuku .apd-emitter input::placeholder {
               font-size: 11px !important;
+              opacity: 0.85 !important;
             }
             
             /* 弹幕配置面板自动适配定位 - 完全模仿ArtPlayer设置面板 */
