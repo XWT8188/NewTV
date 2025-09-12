@@ -2350,9 +2350,25 @@ function PlayPageClient() {
               display: none !important;
             }
             
-            /* 移动端缩短弹幕发射器长度 */
+            /* 移动端隐藏弹幕发射器（包括全屏和非全屏） - 使用更强的选择器 */
+            @media (max-width: 768px) {
+              .artplayer .artplayer-plugin-danmuku .apd-emitter,
+              .artplayer-fullscreen .artplayer-plugin-danmuku .apd-emitter,
+              .artplayer-plugin-danmuku .apd-emitter {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+              }
+            }
+            
+            /* 移动端发射器长度缩短 - 覆盖隐藏效果 */
             @media (max-width: 768px) {
               .artplayer-plugin-danmuku .apd-emitter {
+                display: flex !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                pointer-events: auto !important;
                 width: 200px !important;
                 max-width: 200px !important;
               }
