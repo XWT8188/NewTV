@@ -2350,8 +2350,12 @@ function PlayPageClient() {
               display: none !important;
             }
             
-            /* 移动端隐藏弹幕发射器（包括全屏和非全屏） - 使用更强的选择器 */
+            /* 移动端隐藏弹幕发射器（包括全屏和非全屏） - 使用最强的选择器 */
             @media (max-width: 768px) {
+              body .artplayer .artplayer-plugin-danmuku .apd-emitter,
+              body .artplayer-fullscreen .artplayer-plugin-danmuku .apd-emitter,
+              html body .artplayer .artplayer-plugin-danmuku .apd-emitter,
+              html body .artplayer-fullscreen .artplayer-plugin-danmuku .apd-emitter,
               .artplayer .artplayer-plugin-danmuku .apd-emitter,
               .artplayer-fullscreen .artplayer-plugin-danmuku .apd-emitter,
               .artplayer-plugin-danmuku .apd-emitter {
@@ -2359,6 +2363,9 @@ function PlayPageClient() {
                 visibility: hidden !important;
                 opacity: 0 !important;
                 pointer-events: none !important;
+                height: 0 !important;
+                width: 0 !important;
+                overflow: hidden !important;
               }
             }
             
