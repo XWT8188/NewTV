@@ -2185,24 +2185,145 @@ function PlayPageClient() {
               },
             },
             // 🚀 弹幕输入框和发送按钮（仅PC端显示）
-            // PC端弹幕发送功能
+            // PC端弹幕发送功能 - 内嵌式输入框
             ...(isMobile ? [] : [{
               position: 'right',
-              html: '发送弹幕',
-              tooltip: '发送弹幕',
-              click: function() {
-                const text = prompt('请输入弹幕内容', '');
-                if (!text || !text.trim()) return;
-                
-                if (artPlayerRef.current?.plugins?.artplayerPluginDanmuku) {
-                  artPlayerRef.current.plugins.artplayerPluginDanmuku.emit({
-                    text: text.trim(),
-                    color: '#FFFFFF',
-                    mode: 0,
-                  });
-                  artPlayerRef.current.notice.show(`弹幕已发送: ${text.trim()}`);
-                }
-              },
+              html: `
+                 <div class="danmu-input-container" style="
+                   display: flex;
+                   align-items: center;
+                   background: rgba(0, 0, 0, 0.8);
+                   border-radius: 20px;
+                   padding: 2px;
+                   margin: 0 8px;
+                   min-width: 220px;
+                   max-width: 300px;
+                   border: 1px solid rgba(255, 255, 255, 0.15);
+                   backdrop-filter: blur(4px);
+                   transition: all 0.2s ease;
+                 ">
+                   <input 
+                     type="text" 
+                     placeholder="输入友善的弹幕吧~" 
+                     class="danmu-input"
+                     style="
+                       background: transparent;
+                       border: none;
+                       outline: none;
+                       color: #fff;
+                       font-size: 13px;
+                       flex: 1;
+                       padding: 8px 12px;
+                       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                     "
+                     maxlength="50"
+                   />
+                   <button 
+                     class="danmu-send-btn"
+                     style="
+                       background: #00a1d6;
+                       color: white;
+                       border: none;
+                       border-radius: 16px;
+                       padding: 6px 16px;
+                       font-size: 12px;
+                       font-weight: 500;
+                       cursor: pointer;
+                       margin: 2px;
+                       transition: all 0.2s ease;
+                       box-shadow: 0 2px 4px rgba(0, 161, 214, 0.3);
+                     "
+                     onmouseover="this.style.background='#0084b3'; this.style.transform='scale(1.05)'"
+                     onmouseout="this.style.background='#00a1d6'; this.style.transform='scale(1)'"
+                   >
+                     发送
+                   </button>
+                 </div>
+               `,
+              mounted: function(element: HTMLElement) {
+                 const input = element.querySelector('.danmu-input') as HTMLInputElement;
+                 const sendBtn = element.querySelector('.danmu-send-btn') as HTMLButtonElement;
+                 const container = element.querySelector('.danmu-input-container') as HTMLElement;
+                 
+                 const sendDanmu = () => {
+                   const text = input.value.trim();
+                   if (!text) {
+                     // 输入为空时的提示
+                     input.style.animation = 'shake 0.3s ease-in-out';
+                     setTimeout(() => {
+                       input.style.animation = '';
+                     }, 300);
+                     return;
+                   }
+                   
+                   if (artPlayerRef.current?.plugins?.artplayerPluginDanmuku) {
+                     artPlayerRef.current.plugins.artplayerPluginDanmuku.emit({
+                       text: text,
+                       color: '#FFFFFF',
+                       mode: 0,
+                     });
+                     artPlayerRef.current.notice.show(`弹幕已发送: ${text}`);
+                     input.value = '';
+                     input.blur(); // 发送后失去焦点
+                   }
+                 };
+                 
+                 // 添加CSS动画样式
+                 const style = document.createElement('style');
+                 style.textContent = `
+                   @keyframes shake {
+                     0%, 100% { transform: translateX(0); }
+                     25% { transform: translateX(-2px); }
+                     75% { transform: translateX(2px); }
+                   }
+                 `;
+                 document.head.appendChild(style);
+                 
+                 // 发送按钮点击事件
+                 if (sendBtn) {
+                   sendBtn.addEventListener('click', (e) => {
+                     e.preventDefault();
+                     e.stopPropagation();
+                     sendDanmu();
+                   });
+                 }
+                 
+                 // 输入框事件处理
+                 if (input) {
+                   // 焦点状态样式
+                   input.addEventListener('focus', () => {
+                     if (container) {
+                       container.style.border = '1px solid #00a1d6';
+                       container.style.boxShadow = '0 0 0 2px rgba(0, 161, 214, 0.2)';
+                     }
+                   });
+                   
+                   input.addEventListener('blur', () => {
+                     if (container) {
+                       container.style.border = '1px solid rgba(255, 255, 255, 0.15)';
+                       container.style.boxShadow = 'none';
+                     }
+                   });
+                   
+                   // 回车发送
+                   input.addEventListener('keypress', (e) => {
+                     if (e.key === 'Enter') {
+                       e.preventDefault();
+                       e.stopPropagation();
+                       sendDanmu();
+                     }
+                   });
+                   
+                   // 阻止输入框事件冒泡到播放器
+                   input.addEventListener('keydown', (e) => {
+                     e.stopPropagation();
+                   });
+                   
+                   input.addEventListener('click', (e) => {
+                     e.stopPropagation();
+                   });
+                 }
+               },
             }]),
           ],
           // 🚀 性能优化的弹幕插件配置 - 保持弹幕数量，优化渲染性能
