@@ -2242,7 +2242,7 @@ function PlayPageClient() {
                          mode: 0,
                        });
                        input.value = '';
-                       artPlayerRef.current.notice.show = `弹幕已发送: ${text}`;
+                       artPlayerRef.current.notice.show(`弹幕已发送: ${text}`);
                      }
                    };
                   
