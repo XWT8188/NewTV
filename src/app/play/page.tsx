@@ -2228,8 +2228,8 @@ function PlayPageClient() {
                 `,
                 tooltip: '弹幕发送',
                 mounted: function(element: HTMLElement) {
-                  const input = element.querySelector('.danmu-input');
-                  const sendBtn = element.querySelector('.danmu-send-btn');
+                  const input = element.querySelector('.danmu-input') as HTMLInputElement;
+                   const sendBtn = element.querySelector('.danmu-send-btn') as HTMLButtonElement;
                   
                   const sendDanmu = () => {
                      if (!input) return;
