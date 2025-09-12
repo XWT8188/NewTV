@@ -2185,88 +2185,87 @@ function PlayPageClient() {
               },
             },
             // 🚀 弹幕输入框和发送按钮（仅PC端显示）
-            ...(isMobile ? [] : [
-              {
-                position: 'center',
-                index: 10,
-                html: `
-                  <div class="danmu-input-container" style="display: flex; align-items: center; gap: 8px; padding: 0 12px;">
-                    <input 
-                      type="text" 
-                      placeholder="输入弹幕内容" 
-                      class="danmu-input" 
-                      style="
-                        background: rgba(0,0,0,0.6);
-                        border: 1px solid rgba(255,255,255,0.3);
-                        border-radius: 4px;
-                        color: white;
-                        padding: 4px 8px;
-                        font-size: 12px;
-                        width: 150px;
-                        outline: none;
-                      "
-                      maxlength="50"
-                    />
-                    <button 
-                      class="danmu-send-btn" 
-                      style="
-                        background: rgba(255,255,255,0.2);
-                        border: 1px solid rgba(255,255,255,0.3);
-                        border-radius: 4px;
-                        color: white;
-                        padding: 4px 12px;
-                        font-size: 12px;
-                        cursor: pointer;
-                        transition: background 0.2s;
-                      "
-                      onmouseover="this.style.background='rgba(255,255,255,0.3)'"
-                      onmouseout="this.style.background='rgba(255,255,255,0.2)'"
-                    >
-                      发送
-                    </button>
-                  </div>
-                `,
-                tooltip: '弹幕发送',
-                mounted: function(element: HTMLElement) {
-                  const input = element.querySelector('.danmu-input') as HTMLInputElement;
-                   const sendBtn = element.querySelector('.danmu-send-btn') as HTMLButtonElement;
-                  
-                  const sendDanmu = () => {
-                     if (!input) return;
-                     const text = input.value.trim();
-                     if (text && artPlayerRef.current?.plugins?.artplayerPluginDanmuku) {
-                       artPlayerRef.current.plugins.artplayerPluginDanmuku.emit({
-                         text: text,
-                         time: artPlayerRef.current.currentTime,
-                         color: '#FFFFFF',
-                         mode: 0,
-                       });
-                       input.value = '';
-                       artPlayerRef.current.notice.show(`弹幕已发送: ${text}`);
-                     }
-                   };
-                  
-                  // 发送按钮点击事件
-                  if (sendBtn) {
-                    sendBtn.addEventListener('click', sendDanmu);
-                  }
-                  
-                  // 输入框回车事件
-                  if (input) {
-                    input.addEventListener('keypress', (e) => {
-                      if (e.key === 'Enter') {
-                        sendDanmu();
-                      }
+            // PC端弹幕发送功能
+            ...(isMobile ? [] : [{
+              position: 'center',
+              index: 10,
+              html: `
+                <div class="danmu-input-container" style="display: flex; align-items: center; gap: 8px; padding: 0 12px;">
+                  <input 
+                    type="text" 
+                    placeholder="输入弹幕内容" 
+                    class="danmu-input" 
+                    style="
+                      background: rgba(0,0,0,0.6);
+                      border: 1px solid rgba(255,255,255,0.3);
+                      border-radius: 4px;
+                      color: white;
+                      padding: 4px 8px;
+                      font-size: 12px;
+                      width: 150px;
+                      outline: none;
+                    "
+                    maxlength="50"
+                  />
+                  <button 
+                    class="danmu-send-btn" 
+                    style="
+                      background: rgba(255,255,255,0.2);
+                      border: 1px solid rgba(255,255,255,0.3);
+                      border-radius: 4px;
+                      color: white;
+                      padding: 4px 12px;
+                      font-size: 12px;
+                      cursor: pointer;
+                      transition: background 0.2s;
+                    "
+                    onmouseover="this.style.background='rgba(255,255,255,0.3)'"
+                    onmouseout="this.style.background='rgba(255,255,255,0.2)'"
+                  >
+                    发送
+                  </button>
+                </div>
+              `,
+              tooltip: '弹幕发送',
+              mounted: function(element: HTMLElement) {
+                const input = element.querySelector('.danmu-input') as HTMLInputElement;
+                const sendBtn = element.querySelector('.danmu-send-btn') as HTMLButtonElement;
+                
+                const sendDanmu = () => {
+                  if (!input) return;
+                  const text = input.value.trim();
+                  if (text && artPlayerRef.current?.plugins?.artplayerPluginDanmuku) {
+                    artPlayerRef.current.plugins.artplayerPluginDanmuku.emit({
+                      text: text,
+                      time: artPlayerRef.current.currentTime,
+                      color: '#FFFFFF',
+                      mode: 0,
                     });
-                    
-                    // 阻止输入框事件冒泡，避免触发播放器快捷键
-                    input.addEventListener('keydown', (e) => {
-                      e.stopPropagation();
-                    });
+                    input.value = '';
+                    artPlayerRef.current.notice.show(`弹幕已发送: ${text}`);
                   }
-                },
-              }
-            ]),
+                };
+                
+                // 发送按钮点击事件
+                if (sendBtn) {
+                  sendBtn.addEventListener('click', sendDanmu);
+                }
+                
+                // 输入框回车事件
+                if (input) {
+                  input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                      sendDanmu();
+                    }
+                  });
+                  
+                  // 阻止输入框事件冒泡，避免触发播放器快捷键
+                  input.addEventListener('keydown', (e) => {
+                    e.stopPropagation();
+                  });
+                }
+              },
+            }]),
           ],
           // 🚀 性能优化的弹幕插件配置 - 保持弹幕数量，优化渲染性能
           plugins: [
