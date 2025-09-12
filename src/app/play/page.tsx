@@ -2357,6 +2357,18 @@ function PlayPageClient() {
               }
             }
             
+            /* 全屏时隐藏弹幕发射器 */
+            .artplayer-fullscreen .artplayer-plugin-danmuku .apd-emitter {
+              display: none !important;
+            }
+            
+            /* 移动端全屏时强制隐藏弹幕发射器 */
+            @media (max-width: 768px) {
+              .artplayer-fullscreen .artplayer-plugin-danmuku .apd-emitter {
+                display: none !important;
+              }
+            }
+            
             /* 去除官方弹幕发射器输入框的focus描边 */
             .artplayer-plugin-danmuku .apd-emitter input {
               outline: none !important;
@@ -2377,6 +2389,7 @@ function PlayPageClient() {
             
             .artplayer-plugin-danmuku .apd-emitter input::placeholder {
               font-size: 11px !important;
+              color: #ffffff !important;
               opacity: 0.85 !important;
             }
             
