@@ -2227,7 +2227,7 @@ function PlayPageClient() {
                   </div>
                 `,
                 tooltip: '弹幕发送',
-                mounted: function(element) {
+                mounted: function(element: HTMLElement) {
                   const input = element.querySelector('.danmu-input');
                   const sendBtn = element.querySelector('.danmu-send-btn');
                   
