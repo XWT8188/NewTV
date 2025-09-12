@@ -2372,16 +2372,11 @@ function PlayPageClient() {
             
             /* 自定义弹幕发射器输入框样式 */
             .artplayer-plugin-danmuku .apd-emitter input {
-              font-size: 14px !important;
-              padding: 8px 12px !important;
-              border-radius: 6px !important;
-              background-color: rgba(0, 0, 0, 0.7) !important;
-              color: white !important;
+              font-size: 11px !important;
             }
             
             .artplayer-plugin-danmuku .apd-emitter input::placeholder {
-              color: rgba(255, 255, 255, 0.6) !important;
-              font-size: 14px !important;
+              font-size: 11px !important;
             }
             
             /* 弹幕配置面板自动适配定位 - 完全模仿ArtPlayer设置面板 */
@@ -2477,19 +2472,19 @@ function PlayPageClient() {
               const customizePlaceholder = () => {
                 const emitterInput = document.querySelector('.artplayer-plugin-danmuku .apd-emitter input');
                 if (emitterInput) {
-                  emitterInput.setAttribute('placeholder', 'NewTV 希望您发送个友善的弹幕见证');
-                  console.log('已修改弹幕发射器占位符文字');
+                  const placeholderText = '\u004E\u0065\u0077\u0054\u0056\u0020\u9080\u60A8\u53D1\u4E2A\u53CB\u5584\u7684\u5F39\u5E55\u89C1\u8BC1';
+                  emitterInput.setAttribute('placeholder', placeholderText);
                 }
               };
 
               // 立即执行一次
               customizePlaceholder();
-              
+
               // 使用MutationObserver监听DOM变化，确保占位符修改生效
               const observer = new MutationObserver(() => {
                 customizePlaceholder();
               });
-              
+
               const emitterContainer = document.querySelector('.artplayer-plugin-danmuku .apd-emitter');
               if (emitterContainer) {
                 observer.observe(emitterContainer, { childList: true, subtree: true });
