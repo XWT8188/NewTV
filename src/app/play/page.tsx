@@ -2345,12 +2345,8 @@ function PlayPageClient() {
             const style = document.createElement('style');
             style.id = 'danmuku-controls-optimize';
             style.textContent = `
-            /* 只显示弹幕配置按钮，隐藏开关按钮和发射器 */
+            /* 只隐藏官方开关按钮，保留发射器 */
             .artplayer-plugin-danmuku .apd-toggle {
-              display: none !important;
-            }
-            
-            .artplayer-plugin-danmuku .apd-emitter {
               display: none !important;
             }
             
