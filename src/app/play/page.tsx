@@ -2232,33 +2232,38 @@ function PlayPageClient() {
                   const sendBtn = element.querySelector('.danmu-send-btn');
                   
                   const sendDanmu = () => {
-                    const text = input.value.trim();
-                    if (text && artPlayerRef.current?.plugins?.artplayerPluginDanmuku) {
-                      artPlayerRef.current.plugins.artplayerPluginDanmuku.emit({
-                        text: text,
-                        time: artPlayerRef.current.currentTime,
-                        color: '#FFFFFF',
-                        mode: 0,
-                      });
-                      input.value = '';
-                      artPlayerRef.current.notice.show = `弹幕已发送: ${text}`;
-                    }
-                  };
+                     if (!input) return;
+                     const text = input.value.trim();
+                     if (text && artPlayerRef.current?.plugins?.artplayerPluginDanmuku) {
+                       artPlayerRef.current.plugins.artplayerPluginDanmuku.emit({
+                         text: text,
+                         time: artPlayerRef.current.currentTime,
+                         color: '#FFFFFF',
+                         mode: 0,
+                       });
+                       input.value = '';
+                       artPlayerRef.current.notice.show = `弹幕已发送: ${text}`;
+                     }
+                   };
                   
                   // 发送按钮点击事件
-                  sendBtn.addEventListener('click', sendDanmu);
+                  if (sendBtn) {
+                    sendBtn.addEventListener('click', sendDanmu);
+                  }
                   
                   // 输入框回车事件
-                  input.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                      sendDanmu();
-                    }
-                  });
-                  
-                  // 阻止输入框事件冒泡，避免触发播放器快捷键
-                  input.addEventListener('keydown', (e) => {
-                    e.stopPropagation();
-                  });
+                  if (input) {
+                    input.addEventListener('keypress', (e) => {
+                      if (e.key === 'Enter') {
+                        sendDanmu();
+                      }
+                    });
+                    
+                    // 阻止输入框事件冒泡，避免触发播放器快捷键
+                    input.addEventListener('keydown', (e) => {
+                      e.stopPropagation();
+                    });
+                  }
                 },
               }
             ]),
