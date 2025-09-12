@@ -2350,22 +2350,23 @@ function PlayPageClient() {
               display: none !important;
             }
             
-            /* 移动端隐藏弹幕发射器（包括全屏和非全屏） - 使用最强的选择器 */
+            /* 移动端非全屏时隐藏弹幕发射器 */
             @media (max-width: 768px) {
-              body .artplayer .artplayer-plugin-danmuku .apd-emitter,
-              body .artplayer-fullscreen .artplayer-plugin-danmuku .apd-emitter,
-              html body .artplayer .artplayer-plugin-danmuku .apd-emitter,
-              html body .artplayer-fullscreen .artplayer-plugin-danmuku .apd-emitter,
-              .artplayer .artplayer-plugin-danmuku .apd-emitter,
-              .artplayer-fullscreen .artplayer-plugin-danmuku .apd-emitter,
-              .artplayer-plugin-danmuku .apd-emitter {
+              .artplayer:not(.artplayer-fullscreen) .artplayer-plugin-danmuku .apd-emitter {
                 display: none !important;
-                visibility: hidden !important;
-                opacity: 0 !important;
-                pointer-events: none !important;
-                height: 0 !important;
-                width: 0 !important;
-                overflow: hidden !important;
+              }
+            }
+            
+            /* 移动端全屏时缩短弹幕发射器长度 */
+            @media (max-width: 768px) {
+              .artplayer-fullscreen .artplayer-plugin-danmuku .apd-emitter {
+                width: 200px !important;
+                max-width: 200px !important;
+              }
+              
+              .artplayer-fullscreen .artplayer-plugin-danmuku .apd-emitter input {
+                width: 100% !important;
+                max-width: 100% !important;
               }
             }
             
