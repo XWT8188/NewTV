@@ -2350,17 +2350,15 @@ function PlayPageClient() {
               display: none !important;
             }
             
-            /* 移动端隐藏官方弹幕发射器，只在PC端显示 */
+            /* 移动端隐藏弹幕发射器（包括全屏和非全屏） - 使用更强的选择器 */
             @media (max-width: 768px) {
+              .artplayer .artplayer-plugin-danmuku .apd-emitter,
+              .artplayer-fullscreen .artplayer-plugin-danmuku .apd-emitter,
               .artplayer-plugin-danmuku .apd-emitter {
                 display: none !important;
-              }
-            }
-            
-            /* 移动端隐藏弹幕发射器（包括全屏和非全屏） */
-            @media (max-width: 768px) {
-              .artplayer-plugin-danmuku .apd-emitter {
-                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
               }
             }
             
