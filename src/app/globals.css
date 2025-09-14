@@ -230,3 +230,28 @@ div[data-media-provider] video {
     width: 28px !important;
   }
 }
+
+/* 强制设置弹幕元素的z-index低于AI聊天界面 */
+.artplayer-plugin-danmuku,
+.artplayer-plugin-danmuku *,
+.apd-danmaku,
+.apd-danmaku *,
+.art-danmaku,
+.art-danmaku *,
+[class*="danmaku"],
+[class*="danmu"] {
+  z-index: 10 !important;
+}
+
+/* 确保弹幕容器不会覆盖AI聊天界面 */
+.artplayer .artplayer-plugin-danmuku,
+.artplayer .apd-danmaku {
+  z-index: 10 !important;
+  position: relative !important;
+}
+
+/* 弹幕文字元素 */
+.artplayer-plugin-danmuku .apd-danmaku-item,
+.apd-danmaku-item {
+  z-index: 10 !important;
+}

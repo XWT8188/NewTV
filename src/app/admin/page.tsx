@@ -348,9 +348,10 @@ interface UserConfigProps {
   config: AdminConfig | null;
   role: 'owner' | 'admin' | null;
   refreshConfig: () => Promise<void>;
+  setConfig: React.Dispatch<React.SetStateAction<AdminConfig | null>>;
 }
 
-const UserConfig = ({ config, role, refreshConfig }: UserConfigProps) => {
+const UserConfig = ({ config, role, refreshConfig, setConfig }: UserConfigProps) => {
   const { alertModal, showAlert, hideAlert } = useAlertModal();
   const { isLoading, withLoading } = useLoadingState();
   const [showAddUserForm, setShowAddUserForm] = useState(false);
@@ -807,6 +808,19 @@ const UserConfig = ({ config, role, refreshConfig }: UserConfigProps) => {
                   role="switch"
                   aria-checked={config.UserConfig.AllowRegister}
                   onClick={async () => {
+                    // 乐观更新：立即更新UI状态
+                    const previousValue = config.UserConfig.AllowRegister;
+                    const newValue = !previousValue;
+                    
+                    // 立即更新本地状态
+                    setConfig(prev => ({
+                      ...prev!,
+                      UserConfig: {
+                        ...prev!.UserConfig,
+                        AllowRegister: newValue
+                      }
+                    }));
+
                     await withLoading('toggleAllowRegister', async () => {
                       try {
                         const response = await fetch('/api/admin/config', {
@@ -816,23 +830,30 @@ const UserConfig = ({ config, role, refreshConfig }: UserConfigProps) => {
                             ...config,
                             UserConfig: {
                               ...config.UserConfig,
-                              AllowRegister: !config.UserConfig.AllowRegister
+                              AllowRegister: newValue
                             }
                           })
                         });
 
                         if (response.ok) {
-                          await refreshConfig();
                           showAlert({
                             type: 'success',
                             title: '设置已更新',
-                            message: config.UserConfig.AllowRegister ? '已禁止用户注册' : '已允许用户注册',
+                            message: newValue ? '已允许用户注册' : '已禁止用户注册',
                             timer: 2000
                           });
                         } else {
                           throw new Error('更新配置失败');
                         }
                       } catch (err) {
+                        // 发生错误时回滚状态
+                        setConfig(prev => ({
+                          ...prev!,
+                          UserConfig: {
+                            ...prev!.UserConfig,
+                            AllowRegister: previousValue
+                          }
+                        }));
                         showError(err instanceof Error ? err.message : '操作失败', showAlert);
                       }
                     });
@@ -868,6 +889,20 @@ const UserConfig = ({ config, role, refreshConfig }: UserConfigProps) => {
                   role="switch"
                   aria-checked={(config as any).UserConfig.RequireApproval}
                   onClick={async () => {
+                    // 乐观更新：立即更新UI状态
+                    const previousValue = (config as any).UserConfig.RequireApproval;
+                    const newValue = !previousValue;
+                    
+                    // 立即更新本地状态
+                    setConfig(prev => ({
+                      ...prev!,
+                      UserConfig: {
+                        ...prev!.UserConfig,
+                        RequireApproval: newValue,
+                        PendingUsers: (prev!.UserConfig as any).PendingUsers || [],
+                      }
+                    }));
+
                     await withLoading('toggleRequireApproval', async () => {
                       try {
                         const response = await fetch('/api/admin/config', {
@@ -877,23 +912,31 @@ const UserConfig = ({ config, role, refreshConfig }: UserConfigProps) => {
                             ...config,
                             UserConfig: {
                               ...config.UserConfig,
-                              RequireApproval: !(config as any).UserConfig.RequireApproval,
+                              RequireApproval: newValue,
                               PendingUsers: (config as any).UserConfig.PendingUsers || [],
                             }
                           })
                         });
                         if (response.ok) {
-                          await refreshConfig();
                           showAlert({
                             type: 'success',
                             title: '设置已更新',
-                            message: (config as any).UserConfig.RequireApproval ? '已关闭注册审核' : '已开启注册审核',
+                            message: newValue ? '已开启注册审核' : '已关闭注册审核',
                             timer: 2000
                           });
                         } else {
                           throw new Error('更新配置失败');
                         }
                       } catch (err) {
+                        // 发生错误时回滚状态
+                        setConfig(prev => ({
+                          ...prev!,
+                          UserConfig: {
+                            ...prev!.UserConfig,
+                            RequireApproval: previousValue,
+                            PendingUsers: (prev!.UserConfig as any).PendingUsers || [],
+                          }
+                        }));
                         showError(err instanceof Error ? err.message : '操作失败', showAlert);
                       }
                     });
@@ -5613,6 +5656,7 @@ function AdminPageClient() {
                 config={config}
                 role={role}
                 refreshConfig={fetchConfig}
+                setConfig={setConfig}
               />
             </CollapsibleTab>
 

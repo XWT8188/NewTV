@@ -62,11 +62,69 @@ const YouTubePage = () => {
 
   // --- 数据加载 Effect ---
   useEffect(() => {
+    const CACHE_KEY = 'youtube_connectivity_cache';
+    const CACHE_DURATION = 30 * 60 * 1000; // 30分钟
+
+    const getCachedConnectivity = () => {
+      try {
+        const cached = localStorage.getItem(CACHE_KEY);
+        if (cached) {
+          const { isOnline, timestamp } = JSON.parse(cached);
+          // 只有成功的检测结果才会被缓存，所以这里isOnline应该总是true
+          if (isOnline) {
+            const now = Date.now();
+            if (now - timestamp < CACHE_DURATION) {
+              return true;
+            }
+          }
+        }
+      } catch (error) {
+        console.error('读取连通性缓存失败:', error);
+      }
+      return null;
+    };
+
+    const setCachedConnectivity = (isOnline: boolean) => {
+      try {
+        if (isOnline) {
+          // 只缓存成功的检测结果
+          const cacheData = {
+            isOnline: true,
+            timestamp: Date.now()
+          };
+          localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
+        } else {
+          // 检测失败时清除缓存，确保下次访问会重新检测
+          localStorage.removeItem(CACHE_KEY);
+        }
+      } catch (error) {
+        console.error('保存连通性缓存失败:', error);
+      }
+    };
+
     const checkYouTubeAccess = async () => {
+      // 首先检查缓存
+      const cachedResult = getCachedConnectivity();
+      if (cachedResult !== null) {
+        setIsOnline(cachedResult);
+        setIsLoading(false);
+        if (cachedResult) {
+          // 缓存显示网络正常，直接加载数据
+          await checkConfigAndLoadData();
+        }
+        return;
+      }
+
+      // 缓存无效或不存在，进行实际检测
+      let isTimeout = false;
+
       try {
         // 设置8秒超时控制
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8秒超时
+        const timeoutId = setTimeout(() => {
+          isTimeout = true;
+          controller.abort();
+        }, 8000); // 8秒超时
 
         await fetch('https://www.youtube.com/favicon.ico', {
           method: 'HEAD',
@@ -76,28 +134,80 @@ const YouTubePage = () => {
         });
 
         clearTimeout(timeoutId);
-        setIsOnline(true);
-      } catch (error) {
-        try {
-          const proxyResponse = await fetch('/api/youtube-check');
-          setIsOnline(proxyResponse.ok);
-        } catch (proxyError) {
+
+        // 如果没有超时，网络检测成功
+        if (!isTimeout) {
+          setIsOnline(true);
+          setCachedConnectivity(true); // 缓存成功结果
+          // 网络检测通过后，检查配置并加载数据
+          await checkConfigAndLoadData();
+        } else {
+          // 超时了，强制设置为离线
           setIsOnline(false);
+          setCachedConnectivity(false); // 清除缓存，不缓存失败结果
+        }
+      } catch (error) {
+        // 如果是超时导致的错误，直接设置为离线
+        if (isTimeout) {
+          setIsOnline(false);
+          setCachedConnectivity(false); // 清除缓存，不缓存失败结果
+        } else {
+          // 尝试备用检测
+          try {
+            const proxyResponse = await fetch('/api/youtube-check');
+            if (proxyResponse.ok) {
+              setIsOnline(true);
+              setCachedConnectivity(true); // 缓存成功结果
+              // 网络检测通过后，检查配置并加载数据
+              await checkConfigAndLoadData();
+            } else {
+              // 网络检测失败，固定显示网络错误页面
+              setIsOnline(false);
+              setCachedConnectivity(false); // 清除缓存，不缓存失败结果
+            }
+          } catch (proxyError) {
+            // 网络检测失败，固定显示网络错误页面
+            setIsOnline(false);
+            setCachedConnectivity(false); // 清除缓存，不缓存失败结果
+          }
         }
       } finally {
         setIsLoading(false);
       }
     };
 
-    const loadChannelsAndVideos = async () => {
+    const checkConfigAndLoadData = async () => {
       try {
+        // 检查是否配置了频道
         const channelsResponse = await fetch('/api/youtube-channels');
-        if (!channelsResponse.ok) return;
+        if (!channelsResponse.ok) {
+          // API调用失败，可能是未配置API key
+          setLoadingVideos(false);
+          setInitialLoadComplete(true);
+          return;
+        }
 
         const channelsData = await channelsResponse.json();
         const loadedChannels = channelsData.channels || [];
-        if (loadedChannels.length === 0) return;
 
+        if (loadedChannels.length === 0) {
+          // 没有配置频道，显示配置提示页面
+          setLoadingVideos(false);
+          setInitialLoadComplete(true);
+          return;
+        }
+
+        // 配置正常，加载视频数据
+        await loadChannelsAndVideos(loadedChannels);
+      } catch (error) {
+        console.error('检查配置失败:', error);
+        setLoadingVideos(false);
+        setInitialLoadComplete(true);
+      }
+    };
+
+    const loadChannelsAndVideos = async (loadedChannels: Channel[]) => {
+      try {
         const newVideosByChannel: { [key: string]: YouTubeVideo[] } = {};
 
         // 确保频道按sortOrder排序
@@ -139,7 +249,6 @@ const YouTubePage = () => {
     };
 
     checkYouTubeAccess();
-    loadChannelsAndVideos();
   }, []);
 
   // 处理URL参数中的play参数
@@ -595,24 +704,24 @@ const YouTubePage = () => {
             </div>
           ) : (
             /* 能访问YouTube但未配置频道时的提示 */
-            <div className="flex items-center justify-center h-64">
-              <div className="text-center max-w-lg mx-auto p-6">
+            <div className="flex items-center justify-center min-h-96 py-8">
+              <div className="text-center max-w-2xl mx-auto p-6">
                 <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                 </div>
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">需要配置YouTube频道</h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">还未配置YouTube频道</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-12">
                   YouTube连接正常，但管理员还未配置任何频道。请联系管理员在后台添加YouTube频道和配置API密钥。
                 </p>
-                <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4 mb-4">
+                <div className="mb-4">
                   <h4 className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">管理员配置指南：</h4>
                   <ul className="text-xs text-gray-600 dark:text-gray-400 space-y-1 text-left">
                     <li>• 前往管理后台 → YouTube管理</li>
                     <li>• 添加YouTube频道（支持频道链接、@用户名或频道ID）</li>
-                    <li>• 并在环境变量中配置 YOUTUBE_API_KEY</li>·
+                    <li>• 并在环境变量中配置 YOUTUBE_API_KEY</li>
                     <li>• 保存配置后即可显示频道视频内容</li>
                   </ul>
                 </div>

@@ -2428,7 +2428,7 @@ function PlayPageClient() {
               bottom: 100% !important; /* 显示在按钮上方 */
               margin-bottom: 8px !important; /* 与按钮保持8px间距 */
               transform: translateX(-50%) translateY(10px) !important; /* 水平居中偏移 + 初始向下偏移 */
-              z-index: 91 !important; /* 比ArtPlayer设置面板(90)稍高 */
+              z-index: 91 !important; /* 比ArtPlayer设置面板(90)稍高，但低于AI聊天模态框(9999) */
               display: none !important;
               opacity: 0 !important;
               transition: opacity 0.2s ease, transform 0.2s ease !important;
@@ -3030,7 +3030,7 @@ function PlayPageClient() {
             }
 
             // 对于字号调整，使用更长的防抖时间减少重新渲染
-            const debounceTime = typeof option.fontSize !== 'undefined' ? 800 : 300;
+            const debounceTime = typeof option.fontSize !== 'undefined' ? 2000 : 300;
 
             configUpdateTimeoutRef.current = setTimeout(() => {
               // 这里可以添加额外的弹幕更新逻辑，如果需要的话

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Cloud, ExternalLink, Copy, Check, ChevronDown, ChevronUp } from 'lucide-react';
 import PageLayout from '@/components/PageLayout';
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -33,6 +33,36 @@ export default function CloudDiskPage() {
   const [copiedUrl, setCopiedUrl] = useState<string | null>(null);
   const [quarkCollapsed, setQuarkCollapsed] = useState(false);
   const [baiduCollapsed, setBaiduCollapsed] = useState(false);
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
+
+  // 滚动监听 Effect
+  useEffect(() => {
+    const getScrollTop = () => {
+      return document.body.scrollTop || 0;
+    };
+
+    const handleScroll = () => {
+      const scrollTop = getScrollTop();
+      setShowScrollToTop(scrollTop > 300);
+    };
+
+    document.body.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => {
+      document.body.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  const scrollToTop = () => {
+    try {
+      document.body.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    } catch (error) {
+      document.body.scrollTop = 0;
+    }
+  };
 
   const handleSearch = async () => {
     if (!keyword.trim()) return;
@@ -73,7 +103,7 @@ export default function CloudDiskPage() {
       // 如果夸克网盘结果超过10个，自动折叠百度网盘结果
       const quarkResults = validatedData.data.merged_by_type.quark || [];
       const baiduResults = validatedData.data.merged_by_type.baidu || [];
-      
+
       if (quarkResults.length > 10 && baiduResults.length > 0) {
         setBaiduCollapsed(true);
       }
@@ -101,7 +131,7 @@ export default function CloudDiskPage() {
     try {
       await navigator.clipboard.writeText(url);
       setCopiedUrl(url);
-      setTimeout(() => setCopiedUrl(null), 2000);
+      setTimeout(() => setCopiedUrl(null), 3000);
     } catch (err) {
       console.error('复制失败:', err);
     }
@@ -176,14 +206,14 @@ export default function CloudDiskPage() {
                 {results.data.merged_by_type.quark && results.data.merged_by_type.quark.length > 0 && (
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <h2 
+                      <h2
                         className="text-xl font-semibold text-gray-900 dark:text-white cursor-pointer hover:text-green-600 dark:hover:text-green-400 transition-colors flex items-center"
                         onClick={() => setQuarkCollapsed(!quarkCollapsed)}
                       >
                         夸克网盘 ({results.data.merged_by_type.quark.length})
                         {quarkCollapsed ? <ChevronDown className="w-4 h-4 ml-2" /> : <ChevronUp className="w-4 h-4 ml-2" />}
                       </h2>
-                      <button 
+                      <button
                         onClick={() => setQuarkCollapsed(!quarkCollapsed)}
                         className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition-colors flex items-center gap-1"
                       >
@@ -246,14 +276,14 @@ export default function CloudDiskPage() {
                 {results.data.merged_by_type.baidu && results.data.merged_by_type.baidu.length > 0 && (
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <h2 
+                      <h2
                         className="text-xl font-semibold text-gray-900 dark:text-white cursor-pointer hover:text-green-600 dark:hover:text-green-400 transition-colors flex items-center"
                         onClick={() => setBaiduCollapsed(!baiduCollapsed)}
                       >
                         百度网盘 ({results.data.merged_by_type.baidu.length})
                         {baiduCollapsed ? <ChevronDown className="w-4 h-4 ml-2" /> : <ChevronUp className="w-4 h-4 ml-2" />}
                       </h2>
-                      <button 
+                      <button
                         onClick={() => setBaiduCollapsed(!baiduCollapsed)}
                         className="px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition-colors flex items-center gap-1"
                       >
@@ -329,6 +359,20 @@ export default function CloudDiskPage() {
             )}
           </div>
         </div>
+
+        {/* 返回顶部悬浮按钮 */}
+        <button
+          onClick={scrollToTop}
+          className={`fixed bottom-20 md:bottom-6 right-6 z-[500] w-12 h-12 bg-green-500/90 hover:bg-green-500 text-white rounded-full shadow-lg backdrop-blur-sm transition-all duration-300 ease-in-out flex items-center justify-center group ${showScrollToTop
+            ? 'opacity-100 translate-y-0 pointer-events-auto'
+            : 'opacity-0 translate-y-4 pointer-events-none'
+            }`}
+          aria-label='返回顶部'
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+          </svg>
+        </button>
       </PageLayout>
     </ErrorBoundary>
   );
