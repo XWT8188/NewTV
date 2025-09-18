@@ -157,7 +157,7 @@ export async function POST(request: NextRequest) {
         if (!adminConfig.UserConfig.PendingUsers || adminConfig.UserConfig.PendingUsers.length === 0) {
           return NextResponse.json({ error: '无待审核用户' }, { status: 400 });
         }
-        const pendingIndex = adminConfig.UserConfig.PendingUsers.findIndex(u => u.username === targetUsername);
+        const pendingIndex = adminConfig.UserConfig.PendingUsers.findIndex(u => (u.username || '').trim().toLowerCase() === (targetUsername || '').toLowerCase());
         if (pendingIndex === -1) {
           return NextResponse.json({ error: '未找到该待审核用户' }, { status: 404 });
         }
@@ -174,7 +174,7 @@ export async function POST(request: NextRequest) {
         if (!adminConfig.UserConfig.PendingUsers || adminConfig.UserConfig.PendingUsers.length === 0) {
           return NextResponse.json({ error: '无待审核用户' }, { status: 400 });
         }
-        const pendingIndex = adminConfig.UserConfig.PendingUsers.findIndex(u => u.username === targetUsername);
+        const pendingIndex = adminConfig.UserConfig.PendingUsers.findIndex(u => (u.username || '').trim().toLowerCase() === (targetUsername || '').toLowerCase());
         if (pendingIndex === -1) {
           return NextResponse.json({ error: '未找到该待审核用户' }, { status: 404 });
         }

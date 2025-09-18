@@ -390,9 +390,17 @@ export abstract class BaseRedisStorage implements IStorage {
   }
 
   async setAdminConfig(config: AdminConfig): Promise<void> {
+    // 先保存配置数据
     await this.withRetry(() =>
       this.client.set(this.adminConfigKey(), JSON.stringify(config))
     );
+    
+    // 确保管理员配置永不过期，移除TTL（kvrocks不支持KEEPTTL选项）
+    try {
+      await this.withRetry(() => this.client.persist(this.adminConfigKey()));
+    } catch (error) {
+      console.warn('移除管理员配置TTL失败，但数据已保存:', error);
+    }
   }
 
   // ---------- 跳过片头片尾配置 ----------

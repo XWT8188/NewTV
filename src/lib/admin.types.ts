@@ -76,6 +76,13 @@ export interface AdminConfig {
     model: string;
     customModel?: string;
   };
+  YouTubeChannels?: {
+    id: string;
+    name: string;
+    channelId: string;
+    addedAt: string;
+    sortOrder?: number;
+  }[];
 }
 
 export interface AdminConfigResult {

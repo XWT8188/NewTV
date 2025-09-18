@@ -57,7 +57,7 @@ const buttonStyles = {
   // 主要操作按钮（蓝色）- 用于配置、设置、确认等
   primary: 'px-3 py-1.5 text-sm font-medium bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-lg transition-colors',
   // 成功操作按钮（绿色）- 用于添加、启用、保存等
-  success: 'px-3 py-1.5 text-sm font-medium bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 text-white rounded-lg transition-colors',
+  success: 'px-3 py-1.5 text-sm font-medium bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-lg transition-colors',
   // 危险操作按钮（红色）- 用于删除、禁用、重置等
   danger: 'px-3 py-1.5 text-sm font-medium bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 text-white rounded-lg transition-colors',
   // 次要操作按钮（灰色）- 用于取消、关闭等
@@ -67,7 +67,7 @@ const buttonStyles = {
   // 小尺寸主要按钮
   primarySmall: 'px-2 py-1 text-xs font-medium bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-md transition-colors',
   // 小尺寸成功按钮
-  successSmall: 'px-2 py-1 text-xs font-medium bg-green-600 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-700 text-white rounded-md transition-colors',
+  successSmall: 'px-2 py-1 text-xs font-medium bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-md transition-colors',
   // 小尺寸危险按钮
   dangerSmall: 'px-2 py-1 text-xs font-medium bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 text-white rounded-md transition-colors',
   // 小尺寸次要按钮
@@ -85,7 +85,7 @@ const buttonStyles = {
   disabled: 'px-3 py-1.5 text-sm font-medium bg-gray-400 dark:bg-gray-600 cursor-not-allowed text-white rounded-lg transition-colors',
   disabledSmall: 'px-2 py-1 text-xs font-medium bg-gray-400 dark:bg-gray-600 cursor-not-allowed text-white rounded-md transition-colors',
   // 开关按钮样式
-  toggleOn: 'bg-green-600 dark:bg-green-600',
+  toggleOn: 'bg-blue-600 dark:bg-blue-600',
   toggleOff: 'bg-gray-200 dark:bg-gray-700',
   toggleThumb: 'bg-white',
   toggleThumbOn: 'translate-x-6',
@@ -811,7 +811,7 @@ const UserConfig = ({ config, role, refreshConfig, setConfig }: UserConfigProps)
                     // 乐观更新：立即更新UI状态
                     const previousValue = config.UserConfig.AllowRegister;
                     const newValue = !previousValue;
-                    
+
                     // 立即更新本地状态
                     setConfig(prev => ({
                       ...prev!,
@@ -892,7 +892,7 @@ const UserConfig = ({ config, role, refreshConfig, setConfig }: UserConfigProps)
                     // 乐观更新：立即更新UI状态
                     const previousValue = (config as any).UserConfig.RequireApproval;
                     const newValue = !previousValue;
-                    
+
                     // 立即更新本地状态
                     setConfig(prev => ({
                       ...prev!,
@@ -1193,7 +1193,7 @@ const UserConfig = ({ config, role, refreshConfig, setConfig }: UserConfigProps)
                   onChange={(e) =>
                     setNewUser((prev) => ({ ...prev, username: e.target.value }))
                   }
-                  className='px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-transparent'
+                  className='px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent'
                 />
                 <input
                   type='password'
@@ -1202,7 +1202,7 @@ const UserConfig = ({ config, role, refreshConfig, setConfig }: UserConfigProps)
                   onChange={(e) =>
                     setNewUser((prev) => ({ ...prev, password: e.target.value }))
                   }
-                  className='px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-transparent'
+                  className='px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent'
                 />
               </div>
               <div>
@@ -1214,7 +1214,7 @@ const UserConfig = ({ config, role, refreshConfig, setConfig }: UserConfigProps)
                   onChange={(e) =>
                     setNewUser((prev) => ({ ...prev, userGroup: e.target.value }))
                   }
-                  className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-transparent'
+                  className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent'
                 >
                   <option value=''>无用户组（无限制）</option>
                   {userGroups.map((group) => (
@@ -1426,7 +1426,7 @@ const UserConfig = ({ config, role, refreshConfig, setConfig }: UserConfigProps)
                         <td className='px-6 py-4 whitespace-nowrap'>
                           <span
                             className={`px-2 py-1 text-xs rounded-full ${!user.banned
-                              ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300'
+                              ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300'
                               : 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-300'
                               }`}
                           >
@@ -2563,7 +2563,7 @@ const VideoSourceConfig = ({
       case 'valid':
         return {
           text: '有效',
-          className: 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300',
+          className: 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300',
           icon: '✓',
           message: result.message
         };
@@ -2639,7 +2639,7 @@ const VideoSourceConfig = ({
         <td className='px-6 py-4 whitespace-nowrap max-w-[1rem]'>
           <span
             className={`px-2 py-1 text-xs rounded-full ${!source.disabled
-              ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300'
+              ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300'
               : 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-300'
               }`}
           >
@@ -3235,7 +3235,7 @@ const CategoryConfig = ({
         <td className='px-6 py-4 whitespace-nowrap max-w-[1rem]'>
           <span
             className={`px-2 py-1 text-xs rounded-full ${!category.disabled
-              ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300'
+              ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300'
               : 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-300'
               }`}
           >
@@ -3538,7 +3538,7 @@ const ConfigFileComponent = ({ config, refreshConfig }: { config: AdminConfig | 
               onChange={(e) => setSubscriptionUrl(e.target.value)}
               placeholder='https://example.com/config.json'
               disabled={false}
-              className='w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 shadow-sm hover:border-gray-400 dark:hover:border-gray-500'
+              className='w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 shadow-sm hover:border-gray-400 dark:hover:border-gray-500'
             />
             <p className='mt-2 text-xs text-gray-500 dark:text-gray-400'>
               输入配置文件的订阅地址，要求 JSON 格式，且使用 Base58 编码
@@ -3552,7 +3552,7 @@ const ConfigFileComponent = ({ config, refreshConfig }: { config: AdminConfig | 
               disabled={isLoading('fetchConfig') || !subscriptionUrl.trim()}
               className={`w-full px-6 py-3 rounded-lg font-medium transition-all duration-200 ${isLoading('fetchConfig') || !subscriptionUrl.trim()
                 ? buttonStyles.disabled
-                : buttonStyles.success
+                : buttonStyles.primary
                 }`}
             >
               {isLoading('fetchConfig') ? (
@@ -3580,7 +3580,7 @@ const ConfigFileComponent = ({ config, refreshConfig }: { config: AdminConfig | 
               type='button'
               onClick={() => setAutoUpdate(!autoUpdate)}
               disabled={false}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 ${autoUpdate
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${autoUpdate
                 ? buttonStyles.toggleOn
                 : buttonStyles.toggleOff
                 }`}
@@ -3718,7 +3718,7 @@ const CloudDiskConfigComponent = ({ config, refreshConfig }: { config: AdminConf
             <button
               type='button'
               onClick={() => setCloudDiskSettings(prev => ({ ...prev, enabled: !prev.enabled }))}
-              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 ${cloudDiskSettings.enabled ? buttonStyles.toggleOn : buttonStyles.toggleOff
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${cloudDiskSettings.enabled ? buttonStyles.toggleOn : buttonStyles.toggleOff
                 }`}
             >
               <span
@@ -3738,7 +3738,7 @@ const CloudDiskConfigComponent = ({ config, refreshConfig }: { config: AdminConf
               value={cloudDiskSettings.apiUrl}
               onChange={(e) => setCloudDiskSettings(prev => ({ ...prev, apiUrl: e.target.value }))}
               placeholder='https://so.252035.xyz'
-              className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
+              className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
             />
             <p className='text-xs text-gray-500 dark:text-gray-400 mt-1'>
               网盘搜索API的部署：
@@ -3763,7 +3763,7 @@ const CloudDiskConfigComponent = ({ config, refreshConfig }: { config: AdminConf
               value={cloudDiskSettings.name}
               onChange={(e) => setCloudDiskSettings(prev => ({ ...prev, name: e.target.value }))}
               placeholder='网盘'
-              className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
+              className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white'
             />
             <p className='text-xs text-gray-500 dark:text-gray-400 mt-1'>
               在导航栏中显示的名称
@@ -3981,7 +3981,7 @@ const SiteConfigComponent = ({ config, refreshConfig }: { config: AdminConfig | 
           onChange={(e) =>
             setSiteSettings((prev) => ({ ...prev, SiteName: e.target.value }))
           }
-          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
 
@@ -4001,7 +4001,7 @@ const SiteConfigComponent = ({ config, refreshConfig }: { config: AdminConfig | 
             }))
           }
           rows={3}
-          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-transparent"
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
       </div>
 
@@ -4018,7 +4018,7 @@ const SiteConfigComponent = ({ config, refreshConfig }: { config: AdminConfig | 
             <button
               type='button'
               onClick={() => setIsDoubanDropdownOpen(!isDoubanDropdownOpen)}
-              className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm hover:border-gray-400 dark:hover:border-gray-500 text-left"
+              className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm hover:border-gray-400 dark:hover:border-gray-500 text-left"
             >
               {
                 doubanDataSourceOptions.find(
@@ -4047,13 +4047,13 @@ const SiteConfigComponent = ({ config, refreshConfig }: { config: AdminConfig | 
                       setIsDoubanDropdownOpen(false);
                     }}
                     className={`w-full px-3 py-2.5 text-left text-sm transition-colors duration-150 flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-700 ${siteSettings.DoubanProxyType === option.value
-                      ? 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400'
+                      ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400'
                       : 'text-gray-900 dark:text-gray-100'
                       }`}
                   >
                     <span className='truncate'>{option.label}</span>
                     {siteSettings.DoubanProxyType === option.value && (
-                      <Check className='w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0 ml-2' />
+                      <Check className='w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0 ml-2' />
                     )}
                   </button>
                 ))}
@@ -4104,7 +4104,7 @@ const SiteConfigComponent = ({ config, refreshConfig }: { config: AdminConfig | 
                   DoubanProxy: e.target.value,
                 }))
               }
-              className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 shadow-sm hover:border-gray-400 dark:hover:border-gray-500"
+              className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 shadow-sm hover:border-gray-400 dark:hover:border-gray-500"
             />
             <p className='mt-1 text-xs text-gray-500 dark:text-gray-400'>
               自定义代理服务器地址
@@ -4130,7 +4130,7 @@ const SiteConfigComponent = ({ config, refreshConfig }: { config: AdminConfig | 
                   !isDoubanImageProxyDropdownOpen
                 )
               }
-              className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm hover:border-gray-400 dark:hover:border-gray-500 text-left"
+              className="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 shadow-sm hover:border-gray-400 dark:hover:border-gray-500 text-left"
             >
               {
                 doubanImageProxyTypeOptions.find(
@@ -4216,7 +4216,7 @@ const SiteConfigComponent = ({ config, refreshConfig }: { config: AdminConfig | 
                   DoubanImageProxy: e.target.value,
                 }))
               }
-              className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 shadow-sm hover:border-gray-400 dark:hover:border-gray-500"
+              className="w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 shadow-sm hover:border-gray-400 dark:hover:border-gray-500"
             />
             <p className='mt-1 text-xs text-gray-500 dark:text-gray-400'>
               自定义图片代理服务器地址
@@ -4240,7 +4240,7 @@ const SiteConfigComponent = ({ config, refreshConfig }: { config: AdminConfig | 
               SearchDownstreamMaxPage: Number(e.target.value),
             }))
           }
-          className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-transparent'
+          className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent'
         />
       </div>
 
@@ -4259,7 +4259,7 @@ const SiteConfigComponent = ({ config, refreshConfig }: { config: AdminConfig | 
               SiteInterfaceCacheTime: Number(e.target.value),
             }))
           }
-          className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-green-500 focus:border-transparent'
+          className='w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-transparent'
         />
       </div>
 
@@ -4279,7 +4279,7 @@ const SiteConfigComponent = ({ config, refreshConfig }: { config: AdminConfig | 
                 DisableYellowFilter: !prev.DisableYellowFilter,
               }))
             }
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 ${siteSettings.DisableYellowFilter
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${siteSettings.DisableYellowFilter
               ? buttonStyles.toggleOn
               : buttonStyles.toggleOff
               }`}
@@ -4313,7 +4313,7 @@ const SiteConfigComponent = ({ config, refreshConfig }: { config: AdminConfig | 
                 FluidSearch: !prev.FluidSearch,
               }))
             }
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 ${siteSettings.FluidSearch
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${siteSettings.FluidSearch
               ? buttonStyles.toggleOn
               : buttonStyles.toggleOff
               }`}
@@ -4339,7 +4339,7 @@ const SiteConfigComponent = ({ config, refreshConfig }: { config: AdminConfig | 
           disabled={isLoading('saveSiteConfig')}
           className={`px-4 py-2 ${isLoading('saveSiteConfig')
             ? buttonStyles.disabled
-            : buttonStyles.success
+            : buttonStyles.primary
             } rounded-lg transition-colors`}
         >
           {isLoading('saveSiteConfig') ? '保存中…' : '保存'}
@@ -4596,7 +4596,7 @@ const LiveSourceConfig = ({
         <td className='px-6 py-4 whitespace-nowrap max-w-[1rem]'>
           <span
             className={`px-2 py-1 text-xs rounded-full ${!liveSource.disabled
-              ? 'bg-green-100 dark:bg-green-900/20 text-green-800 dark:text-green-300'
+              ? 'bg-blue-100 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300'
               : 'bg-red-100 dark:bg-red-900/20 text-red-800 dark:text-red-300'
               }`}
           >

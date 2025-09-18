@@ -191,7 +191,7 @@ export const VersionPanel: React.FC<VersionPanelProps> = ({
           ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
           : isUpdate
             ? 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800'
-            : 'bg-gray-50 dark:bg-gray-800/60 border-gray-200 dark:border-gray-700'
+            : 'bg-gray-50 dark:bg-gray-800/80 border-gray-200 dark:border-gray-600'
           }`}
       >
         {/* 版本标题 */}
@@ -305,7 +305,7 @@ export const VersionPanel: React.FC<VersionPanelProps> = ({
 
       {/* 版本面板 */}
       <div
-        className='fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-xl max-h-[90vh] bg-white dark:bg-gray-900 rounded-xl shadow-xl z-[1001] overflow-hidden'
+        className='fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-xl max-h-[90vh] bg-white/95 dark:bg-gray-900/95 rounded-xl shadow-xl z-[1001] overflow-hidden'
         onTouchMove={(e) => {
           // 允许版本面板内部滚动，阻止事件冒泡到外层
           e.stopPropagation();
@@ -335,7 +335,7 @@ export const VersionPanel: React.FC<VersionPanelProps> = ({
           </div>
           <button
             onClick={onClose}
-            className='w-6 h-6 sm:w-8 sm:h-8 p-1 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors'
+            className='w-6 h-6 sm:w-8 sm:h-8 p-1 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors'
             aria-label='关闭'
           >
             <X className='w-full h-full' />

@@ -75,7 +75,7 @@ function DoubanPageClient() {
     year: 'all',
     platform: 'all',
     label: 'all',
-    sort: 'T',
+    sort: 'U',
   });
 
   // 星期选择器状态
@@ -161,7 +161,7 @@ function DoubanPageClient() {
         setPrimarySelection('最近热门');
         setSecondarySelection('show');
       } else if (type === 'anime') {
-        setPrimarySelection('每日放送');
+        setPrimarySelection('番剧');
         setSecondarySelection('全部');
       } else if (type === 'short-drama') {
         setPrimarySelection('热门');
@@ -179,7 +179,7 @@ function DoubanPageClient() {
       year: 'all',
       platform: 'all',
       label: 'all',
-      sort: 'T',
+      sort: 'U',
     });
 
     // 使用短暂延迟确保状态更新完成后标记选择器准备好
@@ -647,7 +647,7 @@ function DoubanPageClient() {
           year: 'all',
           platform: 'all',
           label: 'all',
-          sort: 'T',
+          sort: 'U',
         });
 
         // 如果是自定义分类模式，同时更新一级和二级选择器
@@ -809,7 +809,7 @@ function DoubanPageClient() {
         {/* 内容展示区域 */}
         <div className='max-w-[95%] mx-auto mt-8 overflow-visible'>
           {/* 内容网格 */}
-          <div className='justify-start grid grid-cols-3 gap-x-2 gap-y-12 px-0 sm:px-2 sm:grid-cols-[repeat(auto-fill,minmax(160px,1fr))] sm:gap-x-8 sm:gap-y-20'>
+          <div className='justify-start grid grid-cols-2 gap-x-4 gap-y-12 px-0 sm:px-2 sm:grid-cols-[repeat(auto-fill,minmax(160px,1fr))] sm:gap-x-8 sm:gap-y-20'>
             {loading || !selectorsReady
               ? // 显示骨架屏
               skeletonData.map((index) => <DoubanCardSkeleton key={index} />)

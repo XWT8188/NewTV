@@ -416,11 +416,11 @@ const MultiLevelSelector: React.FC<MultiLevelSelectorProps> = ({
       year: 'all',
       platform: 'all',
       label: 'all',
-      sort: 'T',
+      sort: 'U',
     };
 
     Object.entries(newValues).forEach(([key, value]) => {
-      if (value && value !== 'all' && (key !== 'sort' || value !== 'T')) {
+      if (value && value !== 'all' && (key !== 'sort' || value !== 'U')) {
         const category = categories.find((cat) => cat.key === key);
         if (category) {
           const option = category.options.find((opt) => opt.value === value);
@@ -449,7 +449,7 @@ const MultiLevelSelector: React.FC<MultiLevelSelectorProps> = ({
     if (
       !value ||
       value === 'all' ||
-      (categoryKey === 'sort' && value === 'T')
+      (categoryKey === 'sort' && value === 'U')
     ) {
       return category.label;
     }
@@ -461,7 +461,7 @@ const MultiLevelSelector: React.FC<MultiLevelSelectorProps> = ({
   const isDefaultValue = (categoryKey: string) => {
     const value = values[categoryKey];
     return (
-      !value || value === 'all' || (categoryKey === 'sort' && value === 'T')
+      !value || value === 'all' || (categoryKey === 'sort' && value === 'U')
     );
   };
 
@@ -471,7 +471,7 @@ const MultiLevelSelector: React.FC<MultiLevelSelectorProps> = ({
     if (value === undefined) {
       value = 'all';
       if (categoryKey === 'sort') {
-        value = 'T';
+        value = 'U';
       }
     }
     return value === optionValue;
@@ -534,12 +534,12 @@ const MultiLevelSelector: React.FC<MultiLevelSelectorProps> = ({
             <button
               onClick={() => handleCategoryClick(category.key)}
               className={`relative z-10 px-1.5 py-0.5 sm:px-2 sm:py-1 md:px-4 md:py-2 text-xs sm:text-sm font-medium rounded-full transition-all duration-200 whitespace-nowrap ${activeCategory === category.key
-                  ? isDefaultValue(category.key)
-                    ? 'text-gray-900 dark:text-gray-100 cursor-default'
-                    : 'text-green-600 dark:text-green-400 cursor-default'
-                  : isDefaultValue(category.key)
-                    ? 'text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 cursor-pointer'
-                    : 'text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 cursor-pointer'
+                ? isDefaultValue(category.key)
+                  ? 'text-gray-900 dark:text-gray-100 cursor-default'
+                  : 'text-blue-600 dark:text-blue-400 cursor-default'
+                : isDefaultValue(category.key)
+                  ? 'text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 cursor-pointer'
+                  : 'text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 cursor-pointer'
                 }`}
             >
               <span>{getDisplayText(category.key)}</span>
@@ -567,7 +567,7 @@ const MultiLevelSelector: React.FC<MultiLevelSelectorProps> = ({
         createPortal(
           <div
             ref={dropdownRef}
-            className='fixed z-[9999] bg-white/95 dark:bg-gray-800/95 rounded-xl border border-gray-200/50 dark:border-gray-700/50 backdrop-blur-sm'
+            className='fixed z-[9999] glass-strong rounded-xl'
             style={{
               left: `${dropdownPosition.x}px`,
               top: `${dropdownPosition.y}px`,
@@ -589,8 +589,8 @@ const MultiLevelSelector: React.FC<MultiLevelSelectorProps> = ({
                         handleOptionSelect(activeCategory, option.value)
                       }
                       className={`px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm rounded-lg transition-all duration-200 text-left ${isOptionSelected(activeCategory, option.value)
-                          ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-700'
-                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-700/80'
+                        ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-200 dark:border-blue-700'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-700/80'
                         }`}
                     >
                       {option.label}

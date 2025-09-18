@@ -78,7 +78,7 @@ const DoubanSelector: React.FC<DoubanSelectorProps> = ({
     { label: '日本', value: 'tv_japanese' },
     { label: '韩国', value: 'tv_korean' },
     { label: '动漫', value: 'tv_animation' },
-  //{ label: '纪录片', value: 'tv_documentary' },
+    //{ label: '纪录片', value: 'tv_documentary' },
   ];
 
   // 综艺一级选择器选项
@@ -317,7 +317,7 @@ const DoubanSelector: React.FC<DoubanSelectorProps> = ({
     return (
       <div
         ref={containerRef}
-        className='relative inline-flex bg-gray-200/60 rounded-full p-0.5 sm:p-1 dark:bg-gray-700/60 backdrop-blur-sm'
+        className='relative inline-flex glass-light rounded-full p-0.5 sm:p-1'
       >
         {/* 滑动的白色背景指示器 */}
         {indicatorStyle.width > 0 && (
@@ -339,11 +339,10 @@ const DoubanSelector: React.FC<DoubanSelectorProps> = ({
                 buttonRefs.current[index] = el;
               }}
               onClick={() => onChange(option.value)}
-              className={`relative z-10 px-2 py-1 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium rounded-full transition-all duration-200 whitespace-nowrap ${
-                isActive
+              className={`relative z-10 px-2 py-1 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium rounded-full transition-all duration-200 whitespace-nowrap ${isActive
                   ? 'text-gray-900 dark:text-gray-100 cursor-default'
                   : 'text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 cursor-pointer'
-              }`}
+                }`}
             >
               {option.label}
             </button>
@@ -467,7 +466,7 @@ const DoubanSelector: React.FC<DoubanSelectorProps> = ({
             <div className='overflow-x-auto'>
               {renderCapsuleSelector(
                 animePrimaryOptions,
-                primarySelection || animePrimaryOptions[0].value,
+                primarySelection || animePrimaryOptions[1].value,
                 onPrimaryChange,
                 true
               )}
@@ -475,7 +474,7 @@ const DoubanSelector: React.FC<DoubanSelectorProps> = ({
           </div>
 
           {/* 筛选部分 - 根据一级选择器显示不同内容 */}
-          {(primarySelection || animePrimaryOptions[0].value) === '每日放送' ? (
+          {(primarySelection || animePrimaryOptions[1].value) === '每日放送' ? (
             // 每日放送分类下显示星期选择器
             <div className='flex flex-col sm:flex-row sm:items-center gap-2'>
               <span className='text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 min-w-[48px]'>
@@ -492,8 +491,8 @@ const DoubanSelector: React.FC<DoubanSelectorProps> = ({
                 筛选
               </span>
               <div className='overflow-x-auto'>
-                {(primarySelection || animePrimaryOptions[0].value) ===
-                '番剧' ? (
+                {(primarySelection || animePrimaryOptions[1].value) ===
+                  '番剧' ? (
                   <MultiLevelSelector
                     key={`anime-tv-${primarySelection}`}
                     onChange={handleMultiLevelChange}

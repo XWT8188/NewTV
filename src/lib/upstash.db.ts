@@ -295,6 +295,13 @@ export class UpstashRedisStorage implements IStorage {
 
   async setAdminConfig(config: AdminConfig): Promise<void> {
     await withRetry(() => this.client.set(this.adminConfigKey(), config));
+
+    // 确保管理员配置永不过期，移除可能存在的TTL
+    try {
+      await withRetry(() => this.client.persist(this.adminConfigKey()));
+    } catch (error) {
+      console.warn('移除管理员配置TTL失败，但数据已保存:', error);
+    }
   }
 
   // ---------- 跳过片头片尾配置 ----------

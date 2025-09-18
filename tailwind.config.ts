@@ -32,6 +32,32 @@ const config: Config = {
           900: '#0c4a6e',
         },
         dark: '#222222',
+        // Apple-inspired glass colors
+        glass: {
+          light: 'rgba(255, 255, 255, 0.1)',
+          'light-strong': 'rgba(255, 255, 255, 0.2)',
+          dark: 'rgba(0, 0, 0, 0.2)',
+          'dark-strong': 'rgba(0, 0, 0, 0.4)',
+          border: 'rgba(255, 255, 255, 0.3)',
+          'border-dark': 'rgba(255, 255, 255, 0.1)',
+        },
+      },
+      borderRadius: {
+        'apple-xs': '4px',
+        'apple-sm': '8px',
+        'apple-md': '12px',
+        'apple-lg': '16px',
+        'apple-xl': '20px',
+        'apple-2xl': '24px',
+        'apple-3xl': '32px',
+      },
+      boxShadow: {
+        'glass': '0 8px 32px rgba(0, 0, 0, 0.12)',
+        'elevated': '0 4px 16px rgba(0, 0, 0, 0.12)',
+        'floating': '0 12px 48px rgba(0, 0, 0, 0.18)',
+        'apple-sm': '0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24)',
+        'apple-md': '0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06)',
+        'apple-lg': '0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05)',
       },
       keyframes: {
         flicker: {

@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowDownWideNarrow, ArrowUpDown,ArrowUpNarrowWide } from 'lucide-react';
+import { ArrowDownWideNarrow, ArrowUpDown, ArrowUpNarrowWide } from 'lucide-react';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -154,10 +154,10 @@ const SearchResultFilter: React.FC<SearchResultFilterProps> = ({ categories, val
               className={`relative z-10 px-1.5 py-0.5 sm:px-2 sm:py-1 md:px-4 md:py-2 text-xs sm:text-sm font-medium rounded-full transition-all duration-200 whitespace-nowrap ${activeCategory === category.key
                 ? isDefaultValue(category.key)
                   ? 'text-gray-900 dark:text-gray-100 cursor-default'
-                  : 'text-green-600 dark:text-green-400 cursor-default'
+                  : 'text-blue-600 dark:text-blue-400 cursor-default'
                 : isDefaultValue(category.key)
                   ? 'text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 cursor-pointer'
-                  : 'text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 cursor-pointer'
+                  : 'text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 cursor-pointer'
                 }`}
             >
               <span>{getDisplayText(category.key)}</span>
@@ -208,7 +208,7 @@ const SearchResultFilter: React.FC<SearchResultFilterProps> = ({ categories, val
       {activeCategory && createPortal(
         <div
           ref={dropdownRef}
-          className='fixed z-[9999] bg-white/95 dark:bg-gray-800/95 rounded-xl border border-gray-200/50 dark:border-gray-700/50 backdrop-blur-sm max-h-[50vh] flex flex-col'
+          className='fixed z-[9999] glass-strong rounded-xl border border-gray-200/50 dark:border-gray-700/50 backdrop-blur-sm max-h-[50vh] flex flex-col'
           style={{
             left: `${dropdownPosition.x}px`,
             top: `${dropdownPosition.y}px`,
@@ -224,7 +224,7 @@ const SearchResultFilter: React.FC<SearchResultFilterProps> = ({ categories, val
                   key={option.value}
                   onClick={() => handleOptionSelect(activeCategory, option.value)}
                   className={`px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm rounded-lg transition-all duration-200 text-left ${isOptionSelected(activeCategory, option.value)
-                    ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 border border-green-200 dark:border-green-700'
+                    ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 border border-blue-200 dark:border-blue-700'
                     : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100/80 dark:hover:bg-gray-700/80'
                     }`}
                 >

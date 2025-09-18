@@ -149,7 +149,7 @@ export async function POST(req: NextRequest) {
 
         // 防重：如果已在待审核队列中，返回提示
         const existsInPending = (config.UserConfig as any).PendingUsers.find(
-          (u: any) => u.username === username
+          (u: any) => (u.username || '').trim().toLowerCase() === username.toLowerCase()
         );
         if (existsInPending) {
           return NextResponse.json(

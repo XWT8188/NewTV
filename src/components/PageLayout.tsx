@@ -9,9 +9,10 @@ import AIChatEntry from './AIChatEntry';
 interface PageLayoutProps {
   children: React.ReactNode;
   activePath?: string;
+  defaultSidebarCollapsed?: boolean;
 }
 
-const PageLayout = ({ children, activePath }: PageLayoutProps) => {
+const PageLayout = ({ children, activePath, defaultSidebarCollapsed }: PageLayoutProps) => {
   return (
     <div className='w-full min-h-screen'>
       {/* 移动端头部 */}
@@ -21,7 +22,7 @@ const PageLayout = ({ children, activePath }: PageLayoutProps) => {
       <div className='flex md:grid md:grid-cols-[auto_1fr] w-full min-h-screen md:min-h-auto'>
         {/* 侧边栏 - 桌面端显示，移动端隐藏 */}
         <div className='hidden md:block'>
-          <Sidebar />
+          <Sidebar defaultCollapsed={defaultSidebarCollapsed} />
         </div>
 
         {/* 主内容区域 */}

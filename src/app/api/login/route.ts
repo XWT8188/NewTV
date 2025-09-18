@@ -141,7 +141,7 @@ export async function POST(req: NextRequest) {
       (u: any) => (u.username || '').trim().toLowerCase() === username.toLowerCase()
     );
     if (pending) {
-      return NextResponse.json({ error: '您的注册申请正在审核中' }, { status: 401 });
+      return NextResponse.json({ error: '您的注册申请正在审核中，请耐心等待管理员审批' }, { status: 401 });
     }
 
     // 可能是站长，直接读环境变量

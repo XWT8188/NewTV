@@ -55,10 +55,9 @@ const WeekdaySelector: React.FC<WeekdaySelectorProps> = ({
             }}
             className={`
               relative z-10 px-2 py-1 sm:px-4 sm:py-2 text-xs sm:text-sm font-medium rounded-full transition-all duration-200 whitespace-nowrap
-              ${
-                isActive
-                  ? 'text-green-600 dark:text-green-400 font-semibold'
-                  : 'text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer'
+              ${isActive
+                ? 'text-blue-600 dark:text-blue-400 font-semibold'
+                : 'text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer'
               }
             `}
             title={weekday.label}

@@ -80,7 +80,7 @@ const AlertModal = ({
 
   return createPortal(
     <div className={`fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 transition-opacity duration-200 ${isVisible ? 'opacity-100' : 'opacity-0'}`} onClick={onClose}>
-      <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full border ${getBgColor()} transition-all duration-200 ${isVisible ? 'scale-100' : 'scale-95'}`} onClick={(e) => e.stopPropagation()}>
+      <div className={`glass-strong rounded-lg shadow-xl max-w-md w-full border ${getBgColor()} transition-all duration-200 ${isVisible ? 'scale-100' : 'scale-95'}`} onClick={(e) => e.stopPropagation()}>
         <div className="absolute top-2 right-2">
           <button
             onClick={onClose}
@@ -350,7 +350,7 @@ const DataMigration = ({ onRefreshConfig }: DataMigrationProps) => {
         {/* 主要操作区域 - 响应式布局 */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* 数据导出 */}
-          <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800 hover:shadow-sm transition-shadow flex flex-col">
+          <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 glass-light hover:shadow-sm transition-shadow flex flex-col">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
                 <Download className="w-4 h-4 text-blue-600 dark:text-blue-400" />
@@ -419,7 +419,7 @@ const DataMigration = ({ onRefreshConfig }: DataMigrationProps) => {
           </div>
 
           {/* 数据导入 */}
-          <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 bg-white dark:bg-gray-800 hover:shadow-sm transition-shadow flex flex-col">
+          <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6 glass-light hover:shadow-sm transition-shadow flex flex-col">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-8 h-8 rounded-lg bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
                 <Upload className="w-4 h-4 text-red-600 dark:text-red-400" />

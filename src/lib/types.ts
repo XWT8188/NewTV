@@ -133,6 +133,27 @@ export interface DoubanResult {
   list: DoubanItem[];
 }
 
+// 豆瓣详情数据结构（从 getDoubanDetails 返回的 data 字段）
+export interface DoubanDetail {
+  id: string;
+  title: string;
+  poster: string;
+  rate: string;
+  year: string;
+  directors?: string[];
+  screenwriters?: string[];
+  cast?: string[];
+  genres?: string[];
+  countries?: string[];
+  languages?: string[];
+  episodes?: number;
+  episode_length?: number;
+  first_aired?: string;
+  plot_summary?: string;
+  rating?: string; // 添加 rating 字段以兼容现有代码
+  summary?: string; // 添加 summary 字段以兼容现有代码
+}
+
 // 跳过片头片尾配置相关
 export interface SkipConfig {
   enable: boolean; // 是否启用跳过片头片尾

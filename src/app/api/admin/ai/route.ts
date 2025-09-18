@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
 
     // 写入数据库
     await db.saveAdminConfig(adminConfig);
-    
+
     // 清除配置缓存
     clearConfigCache();
 

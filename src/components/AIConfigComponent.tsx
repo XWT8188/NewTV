@@ -168,7 +168,7 @@ export default function AIConfigComponent() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 rounded-xl">
       <div className="space-y-4">
         {/* 启用开关 */}
         <div className="flex items-center space-x-3">

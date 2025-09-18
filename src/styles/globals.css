@@ -115,4 +115,11 @@
   .animated-underline:focus-visible {
     background-size: 0 2px, 100% 2px;
   }
+
+  /* 移动端字体缩小30% */
+  @media (max-width: 767px) {
+    html {
+      font-size: 70%; /* 缩小30% */
+    }
+  }
 }

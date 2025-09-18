@@ -16,9 +16,26 @@ interface MobileBottomNavProps {
 
 const MobileBottomNav = ({ activePath }: MobileBottomNavProps) => {
   const pathname = usePathname();
+  const [currentActive, setCurrentActive] = useState<string>('');
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  // 当前激活路径：优先使用传入的 activePath，否则回退到浏览器地址
-  const currentActive = activePath ?? pathname;
+  // 监听路径变化，确保状态同步
+  useEffect(() => {
+    const newActive = activePath ?? pathname;
+    if (newActive) {
+      setCurrentActive(newActive);
+      setIsInitialized(true);
+    }
+  }, [activePath, pathname]);
+
+  // 初始化时设置当前路径
+  useEffect(() => {
+    if (!isInitialized && pathname) {
+      const initialActive = activePath ?? pathname;
+      setCurrentActive(initialActive);
+      setIsInitialized(true);
+    }
+  }, [pathname, activePath, isInitialized]);
 
   const [navItems, setNavItems] = useState([
     { icon: Home, label: '首页', href: '/' },
@@ -44,54 +61,63 @@ const MobileBottomNav = ({ activePath }: MobileBottomNavProps) => {
   }, []);
 
   const isActive = (href: string) => {
+    // 如果组件未初始化或currentActive为空，不激活任何项
+    if (!isInitialized || !currentActive) {
+      return false;
+    }
+
     // 解码URL以进行正确的比较
     const decodedActive = decodeURIComponent(currentActive);
-    const decodedItemHref = decodeURIComponent(href);
 
-    // 首页完全匹配
-    if (href === '/' && decodedActive === '/') {
-      return true;
+    // 首页严格匹配 - 只有完全是根路径时才激活
+    if (href === '/') {
+      return decodedActive === '/';
     }
 
     // 直播页面匹配
-    if (href === '/live' && decodedActive.startsWith('/live')) {
-      return true;
+    if (href === '/live') {
+      return decodedActive === '/live' || decodedActive.startsWith('/live/');
     }
 
     // YouTube页面匹配
-    if (href === '/youtube' && decodedActive.startsWith('/youtube')) {
-      return true;
+    if (href === '/youtube') {
+      return decodedActive === '/youtube' || decodedActive.startsWith('/youtube/');
     }
 
     // 处理豆瓣类型页面的匹配
     if (href.startsWith('/douban?type=')) {
-      const typeMatch = href.match(/type=([^&]+)/)?.[1];
-      if (typeMatch && decodedActive.startsWith('/douban')) {
-        // 使用更简单可靠的方法：直接解析查询字符串
-        const queryString = decodedActive.split('?')[1];
+      // 提取导航项的type参数
+      const hrefTypeMatch = href.match(/type=([^&]+)/)?.[1];
+
+      if (hrefTypeMatch && decodedActive.startsWith('/douban')) {
+        // 解析当前URL的查询参数
+        const [, queryString] = decodedActive.split('?');
         if (queryString) {
           const params = new URLSearchParams(queryString);
-          const activeType = params.get('type');
-          return activeType === typeMatch;
+          const currentType = params.get('type');
+          // 严格匹配type参数
+          return currentType === hrefTypeMatch;
         }
-        // 如果没有查询字符串，回退到字符串包含检查
-        return decodedActive.includes(`type=${typeMatch}`);
+        // 如果豆瓣页面没有type参数，不匹配任何导航项
+        return false;
       }
+      return false;
     }
 
     return false;
   };
 
-  const moreActive =
+  const moreActive = isInitialized && currentActive ? (
     currentActive.includes('type=anime') ||
     currentActive.includes('type=show') ||
     currentActive.includes('type=short-drama') ||
     currentActive.includes('type=custom') ||
-    currentActive.includes('/cloud-disk');
+    currentActive.includes('/cloud-disk')
+  ) : false;
 
   return (
     <nav
-      className='md:hidden fixed left-0 right-0 z-[600] bg-white/90 backdrop-blur-xl border-t border-gray-200/50 overflow-visible dark:bg-gray-900/80 dark:border-gray-700/50'
+      className='md:hidden fixed left-0 right-0 z-[600] glass-nav border-t border-white/20 overflow-visible dark:border-white/10'
       style={{
         /* 紧贴视口底部，同时在内部留出安全区高度 */
         bottom: 0,
@@ -99,30 +125,29 @@ const MobileBottomNav = ({ activePath }: MobileBottomNavProps) => {
         minHeight: 'calc(3.5rem + env(safe-area-inset-bottom))',
       }}
     >
-      <ul className='flex items-center overflow-x-auto scrollbar-hide'>
+      <ul className='grid grid-cols-6 w-full'>
         {navItems.map((item) => {
           const active = isActive(item.href);
           return (
             <li
               key={item.href}
-              className='flex-shrink-0'
-              style={{ width: 'calc(100vw / 6)', minWidth: 'calc(100vw / 6)' }}
+              className='flex justify-center items-center'
             >
               {item.label !== '更多' ? (
                 <Link
                   href={item.href}
-                  className='flex flex-col items-center justify-center w-full h-14 gap-1 text-xs'
+                  className='flex flex-col items-center justify-center w-full h-14 gap-1 text-xs transition-all duration-200 hover:bg-white/10 dark:hover:bg-white/5 rounded-lg'
                 >
                   <item.icon
-                    className={`h-6 w-6 ${active
-                      ? 'text-green-600 dark:text-green-400'
+                    className={`h-6 w-6 transition-colors duration-200 ${active
+                      ? 'text-blue-600 dark:text-blue-400'
                       : 'text-gray-500 dark:text-gray-400'
                       }`}
                   />
                   <span
-                    className={`${active
-                        ? 'text-green-600 dark:text-green-400'
-                        : 'text-gray-600 dark:text-gray-300'
+                    className={`transition-colors duration-200 ${active
+                      ? 'text-blue-600 dark:text-blue-400'
+                      : 'text-gray-600 dark:text-gray-300'
                       } ${item.label === 'YouTube' ? 'text-[10px]' : 'text-xs'}`}
                   >
                     {item.label}
@@ -132,15 +157,15 @@ const MobileBottomNav = ({ activePath }: MobileBottomNavProps) => {
                 <button
                   type='button'
                   onClick={() => setShowMore((v) => !v)}
-                  className='flex flex-col items-center justify-center w-full h-14 gap-1 text-xs'
+                  className='flex flex-col items-center justify-center w-full h-14 gap-1 text-xs transition-all duration-200 hover:bg-white/10 dark:hover:bg-white/5 rounded-lg'
                 >
                   <item.icon
-                    className={`h-6 w-6 ${moreActive
-                      ? 'text-green-600 dark:text-green-400'
+                    className={`h-6 w-6 transition-colors duration-200 ${moreActive
+                      ? 'text-blue-600 dark:text-blue-400'
                       : 'text-gray-500 dark:text-gray-400'
                       }`}
                   />
-                  <span className={`${moreActive ? 'text-green-600 dark:text-green-400' : 'text-gray-600 dark:text-gray-300'} text-xs`}>
+                  <span className={`transition-colors duration-200 ${moreActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'} text-xs`}>
                     更多
                   </span>
                 </button>
@@ -152,25 +177,25 @@ const MobileBottomNav = ({ activePath }: MobileBottomNavProps) => {
 
       {showMore && (
         <div className='absolute bottom-[calc(3.5rem+env(safe-area-inset-bottom)+0.5rem)] left-0 right-0 z-[650] px-4'>
-          <div className='mx-auto max-w-sm rounded-xl border border-gray-200/60 bg-white/95 dark:border-gray-700/60 dark:bg-gray-900/95 shadow-lg backdrop-blur-xl'>
+          <div className='mx-auto max-w-sm glass-nav border border-white/20 dark:border-white/10 shadow-floating rounded-apple-xl'>
             <div className='flex divide-x divide-gray-200/60 dark:divide-gray-700/60'>
               <Link
                 href='/douban?type=short-drama'
-                className='flex-1 px-2 py-3 flex items-center justify-center gap-1 text-xs text-gray-700 dark:text-gray-200 hover:text-green-600 dark:hover:text-green-400'
+                className='flex-1 px-2 py-3 flex items-center justify-center gap-1 text-xs text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
                 onClick={() => setShowMore(false)}
               >
                 <Clapperboard className='h-4 w-4' /> 短剧
               </Link>
               <Link
                 href='/douban?type=anime'
-                className='flex-1 px-2 py-3 flex items-center justify-center gap-1 text-xs text-gray-700 dark:text-gray-200 hover:text-green-600 dark:hover:text-green-400'
+                className='flex-1 px-2 py-3 flex items-center justify-center gap-1 text-xs text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
                 onClick={() => setShowMore(false)}
               >
                 <Cat className='h-4 w-4' /> 动漫
               </Link>
               <Link
                 href='/douban?type=show'
-                className='flex-1 px-2 py-3 flex items-center justify-center gap-1 text-xs text-gray-700 dark:text-gray-200 hover:text-green-600 dark:hover:text-green-400'
+                className='flex-1 px-2 py-3 flex items-center justify-center gap-1 text-xs text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
                 onClick={() => setShowMore(false)}
               >
                 <Clover className='h-4 w-4' /> 综艺
@@ -178,7 +203,7 @@ const MobileBottomNav = ({ activePath }: MobileBottomNavProps) => {
               {hasCustom && (
                 <Link
                   href='/douban?type=custom'
-                  className='flex-1 px-2 py-3 flex items-center justify-center gap-1 text-xs text-gray-700 dark:text-gray-200 hover:text-green-600 dark:hover:text-green-400'
+                  className='flex-1 px-2 py-3 flex items-center justify-center gap-1 text-xs text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
                   onClick={() => setShowMore(false)}
                 >
                   <Star className='h-4 w-4' /> 纪录
@@ -187,7 +212,7 @@ const MobileBottomNav = ({ activePath }: MobileBottomNavProps) => {
               {hasCloudDisk && (
                 <Link
                   href='/cloud-disk'
-                  className='flex-1 px-2 py-3 flex items-center justify-center gap-1 text-xs text-gray-700 dark:text-gray-200 hover:text-green-600 dark:hover:text-green-400'
+                  className='flex-1 px-2 py-3 flex items-center justify-center gap-1 text-xs text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400'
                   onClick={() => setShowMore(false)}
                 >
                   <Cloud className='h-4 w-4' /> {cloudDiskName}

@@ -110,12 +110,12 @@ async function refreshRecordAndFavorites() {
   try {
     const users = await db.getAllUsers();
     console.log('📋 数据库中的用户列表:', users);
-    
+
     if (process.env.USERNAME && !users.includes(process.env.USERNAME)) {
       users.push(process.env.USERNAME);
       console.log(`➕ 添加环境变量用户: ${process.env.USERNAME}`);
     }
-    
+
     console.log('📋 最终处理用户列表:', users);
     // 函数级缓存：key 为 `${source}+${id}`，值为 Promise<VideoDetail | null>
     const detailCache = new Map<string, Promise<SearchResult | null>>();
@@ -150,7 +150,7 @@ async function refreshRecordAndFavorites() {
 
     for (const user of users) {
       console.log(`开始处理用户: ${user}`);
-      
+
       // 检查用户是否真的存在
       const userExists = await db.checkUserExist(user);
       console.log(`用户 ${user} 是否存在: ${userExists}`);
