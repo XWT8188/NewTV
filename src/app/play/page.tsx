@@ -26,6 +26,7 @@ import {
 import { getAuthInfoFromBrowserCookie } from '@/lib/auth';
 import { getDoubanDetails } from '@/lib/douban.client';
 import { SearchResult, DanmakuConfig } from '@/lib/types';
+import { checkVideoUpdate } from '@/lib/watching-updates';
 
 // 弹幕配置相关函数
 const getDanmakuConfig = async (): Promise<DanmakuConfig | null> => {
@@ -1241,7 +1242,7 @@ function PlayPageClient() {
               }
 
               // 停止并重置弹幕，防止重复
-              plugin.stop();
+              plugin.load();
               plugin.reset();
               console.log('集数切换：已停止并重置弹幕插件');
 
@@ -1403,6 +1404,13 @@ function PlayPageClient() {
         setCurrentEpisodeIndex(0);
       }
 
+      // 检查新集数更新
+      try {
+        await checkVideoUpdate(detailData.source, detailData.id);
+      } catch (error) {
+        console.error('检查新集数更新失败:', error);
+      }
+
       // 规范URL参数
       const newUrl = new URL(window.location.href);
       newUrl.searchParams.set('source', detailData.source);
@@ -1551,6 +1559,13 @@ function PlayPageClient() {
       setCurrentId(newId);
       setDetail(newDetail);
       setCurrentEpisodeIndex(targetIndex);
+
+      // 检查新集数更新
+      try {
+        await checkVideoUpdate(newDetail.source, newDetail.id);
+      } catch (error) {
+        console.error('换源后检查新集数更新失败:', error);
+      }
     } catch (err) {
       // 隐藏换源加载状态
       setIsVideoLoading(false);
@@ -1961,7 +1976,7 @@ function PlayPageClient() {
                   }
 
                   // 停止并重置弹幕，防止重复
-                  plugin.stop();
+                  plugin.load();
                   plugin.reset();
                   console.log('换源：已停止并重置弹幕插件');
 

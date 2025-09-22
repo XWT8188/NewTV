@@ -26,6 +26,14 @@ export interface Favorite {
   origin?: 'vod' | 'live';
 }
 
+// 用户统计数据结构
+export interface UserStats {
+  totalWatchTime: number; // 总观看时长（秒）
+  totalMovies: number; // 观看影片总数
+  firstWatchDate: number; // 首次观看时间戳
+  lastUpdateTime: number; // 最后更新时间戳
+}
+
 // 存储接口
 export interface IStorage {
   // 播放记录相关
@@ -85,6 +93,15 @@ export interface IStorage {
   getDanmakuConfig(userName: string): Promise<DanmakuConfig | null>;
   setDanmakuConfig(userName: string, config: DanmakuConfig): Promise<void>;
   deleteDanmakuConfig(userName: string): Promise<void>;
+
+  // 用户统计数据相关
+  getUserStats(userName: string): Promise<UserStats | null>;
+  updateUserStats(userName: string, updateData: {
+    watchTime: number;
+    movieKey: string;
+    timestamp: number;
+  }): Promise<void>;
+  clearUserStats(userName: string): Promise<void>;
 
   // 数据清理相关
   clearAllData(): Promise<void>;

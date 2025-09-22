@@ -178,7 +178,7 @@ export default function CloudDiskPage() {
                 <button
                   onClick={handleSearch}
                   disabled={loading || !keyword.trim()}
-                  className="px-6 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition-colors"
+                  className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg font-medium transition-colors"
                 >
                   {loading ? '搜索中...' : '搜索'}
                 </button>

@@ -3,7 +3,7 @@
 import { AdminConfig } from './admin.types';
 import { KvrocksStorage } from './kvrocks.db';
 import { RedisStorage } from './redis.db';
-import { DanmakuConfig, Favorite, IStorage, PlayRecord, SkipConfig } from './types';
+import { DanmakuConfig, Favorite, IStorage, PlayRecord, SkipConfig, UserStats } from './types';
 import { UpstashRedisStorage } from './upstash.db';
 
 // storage type 常量: 'localstorage' | 'redis' | 'upstash'，默认 'localstorage'
@@ -50,7 +50,23 @@ export class DbManager {
   private storage: IStorage;
 
   constructor() {
+    console.log('DbManager 构造函数 - 存储类型:', STORAGE_TYPE);
     this.storage = getStorage();
+    console.log('DbManager 构造函数 - 存储实例创建完成:', this.storage?.constructor?.name);
+  }
+
+  // 测试数据库连接
+  async testConnection(): Promise<boolean> {
+    try {
+      console.log('测试数据库连接...');
+      // 尝试调用一个简单的方法来测试连接
+      const testResult = await this.storage.getAllUsers();
+      console.log('数据库连接测试成功，用户数量:', testResult.length);
+      return true;
+    } catch (error) {
+      console.error('数据库连接测试失败:', error);
+      return false;
+    }
   }
 
   // 播放记录相关方法
@@ -256,6 +272,53 @@ export class DbManager {
       throw new Error('Storage not available');
     }
     await this.storage.deleteDanmakuConfig(userName);
+  }
+
+  // ---------- 用户统计数据 ----------
+  async getUserStats(userName: string): Promise<UserStats | null> {
+    if (typeof (this.storage as any).getUserStats === 'function') {
+      const stats = await (this.storage as any).getUserStats(userName);
+
+      // 确保返回的统计数据不为null，为新用户提供默认值
+      if (!stats) {
+        const defaultStats: UserStats = {
+          totalWatchTime: 0,
+          totalMovies: 0,
+          firstWatchDate: 0, // 初始化为0，将在第一次观看时设置为实际时间
+          lastUpdateTime: Date.now()
+        };
+
+        console.log(`数据库层为新用户 ${userName} 提供默认统计数据:`, defaultStats);
+        return defaultStats;
+      }
+
+      return stats;
+    }
+
+    // 如果存储层不支持getUserStats，返回默认统计数据
+    return {
+      totalWatchTime: 0,
+      totalMovies: 0,
+      firstWatchDate: 0, // 初始化为0，将在第一次观看时设置为实际时间
+      lastUpdateTime: Date.now()
+    };
+  }
+
+  async updateUserStats(userName: string, updateData: {
+    watchTime: number;
+    movieKey: string;
+    timestamp: number;
+    isFullReset?: boolean;
+  }): Promise<void> {
+    if (typeof (this.storage as any).updateUserStats === 'function') {
+      await (this.storage as any).updateUserStats(userName, updateData);
+    }
+  }
+
+  async clearUserStats(userName: string): Promise<void> {
+    if (typeof (this.storage as any).clearUserStats === 'function') {
+      await (this.storage as any).clearUserStats(userName);
+    }
   }
 
   // ---------- 数据清理 ----------

@@ -12,6 +12,7 @@ import {
   Shield,
   User,
   X,
+  Eye,
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -20,6 +21,13 @@ import { createPortal } from 'react-dom';
 import { getAuthInfoFromBrowserCookie } from '@/lib/auth';
 import { CURRENT_VERSION } from '@/lib/version';
 import { checkForUpdates, UpdateStatus } from '@/lib/version_check';
+import {
+  getCachedWatchingUpdates,
+  clearWatchingUpdates,
+  subscribeToWatchingUpdates,
+  checkWatchingUpdates,
+  setupPeriodicUpdateCheck
+} from '@/lib/watching-updates';
 
 import { VersionPanel } from './VersionPanel';
 
@@ -37,6 +45,7 @@ export const UserMenu: React.FC = () => {
   const [authInfo, setAuthInfo] = useState<AuthInfo | null>(null);
   const [storageType, setStorageType] = useState<string>('localstorage');
   const [mounted, setMounted] = useState(false);
+  const [hasWatchingUpdates, setHasWatchingUpdates] = useState(false);
 
   // Body 滚动锁定 - 使用 overflow 方式避免布局问题
   useEffect(() => {
@@ -112,6 +121,26 @@ export const UserMenu: React.FC = () => {
   // 确保组件已挂载
   useEffect(() => {
     setMounted(true);
+
+    // 初始化新集数更新检测
+    const cachedUpdates = getCachedWatchingUpdates();
+    setHasWatchingUpdates(cachedUpdates);
+
+    // 监听新集数更新变化
+    const unsubscribeWatchingUpdates = subscribeToWatchingUpdates((hasUpdates, updatedCount) => {
+      setHasWatchingUpdates(hasUpdates);
+    });
+
+    // 设置定期检查更新（每30分钟）
+    const cleanupPeriodicCheck = setupPeriodicUpdateCheck(30);
+
+    // 页面加载时检查一次更新
+    checkWatchingUpdates();
+
+    return () => {
+      unsubscribeWatchingUpdates();
+      cleanupPeriodicCheck();
+    };
   }, []);
 
   // 获取认证信息和存储类型
@@ -340,6 +369,12 @@ export const UserMenu: React.FC = () => {
     setIsSettingsOpen(true);
   };
 
+  const handleMyWatching = () => {
+    setIsOpen(false);
+    clearWatchingUpdates(); // 清除新集数提醒状态
+    router.push('/my-watching');
+  };
+
   const handleCloseSettings = () => {
     setIsSettingsOpen(false);
   };
@@ -525,6 +560,18 @@ export const UserMenu: React.FC = () => {
           >
             <Settings className='w-4 h-4 text-gray-500 dark:text-gray-400' />
             <span className='font-medium'>设置</span>
+          </button>
+
+          {/* 我的观看按钮 */}
+          <button
+            onClick={handleMyWatching}
+            className='w-full px-3 py-2 text-left flex items-center gap-2.5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-sm relative'
+          >
+            <Eye className='w-4 h-4 text-gray-500 dark:text-gray-400' />
+            <span className='font-medium'>我的观看</span>
+            {hasWatchingUpdates && (
+              <div className='absolute right-3 top-1/2 transform -translate-y-1/2 w-2 h-2 bg-pink-500 rounded-full animate-pulse'></div>
+            )}
           </button>
 
           {/* 管理面板按钮 */}
@@ -1099,7 +1146,12 @@ export const UserMenu: React.FC = () => {
         >
           <User className='w-full h-full' />
         </button>
-        {updateStatus === UpdateStatus.HAS_UPDATE && (
+        {/* 新集数提醒小红点 */}
+        {hasWatchingUpdates && (
+          <div className='absolute top-[2px] right-[2px] w-2.5 h-2.5 bg-pink-500 rounded-full animate-pulse'></div>
+        )}
+        {/* 版本更新提醒小红点 */}
+        {updateStatus === UpdateStatus.HAS_UPDATE && !hasWatchingUpdates && (
           <div className='absolute top-[2px] right-[2px] w-2 h-2 bg-yellow-500 rounded-full'></div>
         )}
       </div>

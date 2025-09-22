@@ -15,10 +15,10 @@ import {
   subscribeToDataUpdates,
 } from '@/lib/db.client';
 import { getDoubanCategories, getDoubanRecommends } from '@/lib/douban.client';
+import { getAuthInfoFromBrowserCookie } from '@/lib/auth';
 import { DoubanItem } from '@/lib/types';
 
 import CapsuleSwitch from '@/components/CapsuleSwitch';
-import ContinueWatching from '@/components/ContinueWatching';
 import PageLayout from '@/components/PageLayout';
 import ScrollableRow from '@/components/ScrollableRow';
 import { useSite } from '@/components/SiteProvider';
@@ -148,9 +148,25 @@ function HomeClient() {
   useEffect(() => {
     if (activeTab !== 'favorites') return;
 
+    // 检查用户是否已认证
+    const authInfo = getAuthInfoFromBrowserCookie();
+    if (!authInfo || !authInfo.username) {
+      // 用户未认证，清空收藏夹数据
+      setFavoriteItems([]);
+      return;
+    }
+
     const loadFavorites = async () => {
-      const allFavorites = await getAllFavorites();
-      await updateFavoriteItems(allFavorites);
+      try {
+        const allFavorites = await getAllFavorites();
+        await updateFavoriteItems(allFavorites);
+      } catch (error) {
+        console.error('加载收藏夹失败:', error);
+        // 如果是401错误，清空收藏夹数据
+        if (error instanceof Error && error.message.includes('401')) {
+          setFavoriteItems([]);
+        }
+      }
     };
 
     loadFavorites();
@@ -227,9 +243,6 @@ function HomeClient() {
           ) : (
             // 首页视图
             <>
-              {/* 继续观看 */}
-              <ContinueWatching />
-
               {/* 热门电影 */}
               <section className='mb-8'>
                 <div className='mb-4 flex items-center justify-between'>
@@ -470,8 +483,8 @@ function HomeClient() {
               ></button>
             </div>
             <div className='mb-6'>
-              <div className='relative overflow-hidden rounded-lg mb-4 bg-green-50 dark:bg-green-900/20'>
-                <div className='absolute inset-y-0 left-0 w-1.5 bg-green-500 dark:bg-green-400'></div>
+              <div className='relative overflow-hidden rounded-lg mb-4 bg-blue-50 dark:bg-blue-900/20'>
+                <div className='absolute inset-y-0 left-0 w-1.5 bg-blue-500 dark:bg-blue-400'></div>
                 <p className='ml-4 text-gray-600 dark:text-gray-300 leading-relaxed'>
                   {announcement}
                 </p>

@@ -162,8 +162,13 @@ const VideoCard = forwardRef<VideoCardHandle, VideoCardProps>(function VideoCard
 
   const actualTitle = title;
   const actualPoster = poster;
-  const actualSource = source;
-  const actualId = id;
+  // 对于播放记录，id是完整的存储key（source+id格式），需要解析
+  const actualSource = from === 'playrecord' && id?.includes('+') 
+    ? id.split('+')[0] 
+    : source;
+  const actualId = from === 'playrecord' && id?.includes('+') 
+    ? id.split('+')[1] 
+    : id;
   const actualDoubanId = dynamicDoubanId;
   const actualEpisodes = dynamicEpisodes;
   const actualYear = year;
@@ -257,15 +262,24 @@ const VideoCard = forwardRef<VideoCardHandle, VideoCardProps>(function VideoCard
     async (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      if (from !== 'playrecord' || !actualSource || !actualId) return;
+      if (from !== 'playrecord' || !id) return;
       try {
-        await deletePlayRecord(actualSource, actualId);
+        // 对于观看记录页面，id是完整的存储key，需要解析出source和id
+        if (from === 'playrecord') {
+          const [source, videoId] = id.split('+');
+          if (source && videoId) {
+            await deletePlayRecord(source, videoId);
+          }
+        } else if (actualSource && actualId) {
+          // 对于其他页面，使用原有逻辑
+          await deletePlayRecord(actualSource, actualId);
+        }
         onDelete?.();
       } catch (err) {
         throw new Error('删除播放记录失败');
       }
     },
-    [from, actualSource, actualId, onDelete]
+    [from, actualSource, actualId, id, onDelete]
   );
 
   // 悬停AI功能事件处理（仅豆瓣卡片）
@@ -903,6 +917,49 @@ const VideoCard = forwardRef<VideoCardHandle, VideoCardProps>(function VideoCard
                 <div className="flex items-center justify-center">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
                 </div>
+              ) : from === 'playrecord' && progress !== undefined ? (
+                // 观看记录显示百分比进度
+                <div className="flex flex-col items-center justify-center text-white">
+                  <div className="relative w-16 h-16 mb-2">
+                    {/* 圆形进度环 */}
+                    <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 64 64">
+                      {/* 背景圆环 */}
+                      <circle
+                        cx="32"
+                        cy="32"
+                        r="28"
+                        stroke="rgba(255,255,255,0.2)"
+                        strokeWidth="4"
+                        fill="none"
+                      />
+                      {/* 进度圆环 */}
+                      <circle
+                        cx="32"
+                        cy="32"
+                        r="28"
+                        stroke="white"
+                        strokeWidth="4"
+                        fill="none"
+                        strokeDasharray={`${2 * Math.PI * 28}`}
+                        strokeDashoffset={`${2 * Math.PI * 28 * (1 - progress / 100)}`}
+                        className="transition-all duration-500 ease-out"
+                        strokeLinecap="round"
+                      />
+                    </svg>
+                    {/* 中心播放图标 */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <PlayCircleIcon
+                        size={24}
+                        strokeWidth={1}
+                        className='text-white fill-transparent'
+                      />
+                    </div>
+                  </div>
+                  {/* 百分比文字 */}
+                  <div className="text-sm font-semibold bg-black/50 px-2 py-1 rounded-full">
+                    {Math.round(progress)}%
+                  </div>
+                </div>
               ) : (
                 <PlayCircleIcon
                   size={50}
@@ -953,7 +1010,7 @@ const VideoCard = forwardRef<VideoCardHandle, VideoCardProps>(function VideoCard
                   }}
                 />
               )}
-              {config.showHeart && from !== 'search' && (
+              {config.showHeart && (
                 <Heart
                   onClick={handleToggleFavorite}
                   size={20}

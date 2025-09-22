@@ -24,7 +24,9 @@ export async function GET(request: NextRequest) {
         (u) => u.username === authInfo.username
       );
       if (!user) {
-        return NextResponse.json({ error: '用户不存在' }, { status: 401 });
+        // 新用户：返回空的播放记录而不是401错误
+        console.log(`新用户 ${authInfo.username} 首次访问，返回空播放记录`);
+        return NextResponse.json({}, { status: 200 });
       }
       if (user.banned) {
         return NextResponse.json({ error: '用户已被封禁' }, { status: 401 });

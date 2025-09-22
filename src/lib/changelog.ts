@@ -10,6 +10,19 @@ export interface ChangelogEntry {
 }
 
 export const changelog: ChangelogEntry[] = [{
+  "version": "7.2.0",
+  "date": "2025-09-20",
+  "added": [
+    "无新增内容"
+  ],
+  "changed": [
+    "🕒 “继续观看”功能重构：推出全新独立页面，新增观看总时长等统计数据，并为有更新的剧集提供角标提醒。"
+  ],
+  "fixed": [
+    "🎯 修复了弹幕与剧集不匹配的问题，确保弹幕与当前播放集数精准同步。",
+    "🔄 解决了特定场景下弹幕会重复加载的问题，优化观看体验。"
+  ]
+}, {
   "version": "7.1.2",
   "date": "2025-09-18",
   "added": [
