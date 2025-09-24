@@ -71,9 +71,9 @@ export function clearWatchingUpdates() {
 }
 
 // 检查单个剧集的更新状态
-async function checkSingleRecordUpdate(record: PlayRecord, videoId: string): Promise<{ hasUpdate: boolean; newEpisodes: number; latestEpisodes: number }> {
+async function checkSingleRecordUpdate(record: PlayRecord, videoId: string, sourceKey: string): Promise<{ hasUpdate: boolean; newEpisodes: number; latestEpisodes: number }> {
   try {
-    const response = await fetch(`/api/detail?source=${record.source_name}&id=${videoId}`);
+    const response = await fetch(`/api/detail?source=${sourceKey}&id=${videoId}`);
     if (!response.ok) {
       console.warn(`获取${record.title}详情失败:`, response.status);
       return { hasUpdate: false, newEpisodes: 0, latestEpisodes: record.total_episodes };
@@ -126,7 +126,7 @@ export async function checkWatchingUpdates(): Promise<void> {
     const updatePromises = records.map(async (record) => {
       // 从存储key中解析出videoId
       const [sourceName, videoId] = record.id.split('+');
-      const updateInfo = await checkSingleRecordUpdate(record, videoId);
+      const updateInfo = await checkSingleRecordUpdate(record, videoId, sourceName);
 
       if (updateInfo.hasUpdate) {
         hasAnyUpdates = true;
@@ -193,7 +193,7 @@ export async function checkVideoUpdate(sourceName: string, videoId: string): Pro
       return;
     }
 
-    const updateInfo = await checkSingleRecordUpdate(targetRecord, videoId);
+    const updateInfo = await checkSingleRecordUpdate(targetRecord, videoId, sourceName);
 
     if (updateInfo.hasUpdate) {
       // 如果发现这个视频有更新，重新检查所有更新状态

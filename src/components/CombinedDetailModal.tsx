@@ -152,7 +152,7 @@ const CombinedDetailModal: React.FC<CombinedDetailModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-2 md:p-4"
+      className="fixed inset-0 bg-black bg-opacity-75 flex items-start md:items-center justify-center z-50 p-2 md:p-4"
       onClick={(e) => {
         // 只有点击背景时才关闭弹窗
         if (e.target === e.currentTarget) {
@@ -269,7 +269,7 @@ const CombinedDetailModal: React.FC<CombinedDetailModalProps> = ({
       </div>
 
       {/* 移动端布局 - 4段式垂直布局 */}
-      <div className={`block md:hidden ${resolvedTheme === 'light' ? 'bg-white bg-opacity-95' : 'bg-gray-800 bg-opacity-90'} rounded-lg shadow-lg w-[90vw] h-[80vh] flex flex-col overflow-hidden relative`}>
+      <div className={`block md:hidden ${resolvedTheme === 'light' ? 'bg-white bg-opacity-95' : 'bg-gray-800 bg-opacity-90'} rounded-lg shadow-lg w-[90vw] h-[70vh] flex flex-col overflow-hidden relative mt-[10vh]`}>
         <button
           onClick={() => {
             clearTimers();
